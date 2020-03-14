@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Ma Réu</string>
+    <string name="participant">participant@lamzone.com, participant@lamzone.com, participant@lamzone.com</string>
+    <string name="reunion_time_place">Réunion - Heure - Salle</string>
+</resources>
