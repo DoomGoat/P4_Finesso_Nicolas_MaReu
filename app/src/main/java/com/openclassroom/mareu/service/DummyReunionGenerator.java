@@ -28,14 +28,12 @@ public abstract class DummyReunionGenerator {
     );
 
     private static List<Reunion> DUMMY_REUNIONS = Arrays.asList(
-            new Reunion(1, "Marketing","#FFFFFF","Bâtiment A, salle 12", "10h00", getParticipants(0) ),
-            new Reunion(2, "Brainstorming","#1F1F1F","Bâtiment C, salle 14", "11h00", getParticipants(0) ),
-            new Reunion(3, "Sales","#2F2F2F","Bâtiment B, salle 18", "14h30", getParticipants(0)),
-            new Reunion(4, "HR","#3F3F3F","Bâtiment A, salle 4", "15h30", getParticipants(0) ),
-            new Reunion(5, "Interview","#4F4F4F","Bâtiment A, salle 12", "16h00", getParticipants(0) )
+            new Reunion(1, "Marketing","#FFFFFF","Bâtiment A, salle 12", "10h00", getParticipants(0, 2, 5, 6, 12)),
+            new Reunion(2, "Brainstorming","#1F1F1F","Bâtiment C, salle 14", "11h00", getParticipants(1, 4, 8, 14, 15)),
+            new Reunion(3, "Sales","#2F2F2F","Bâtiment B, salle 18", "14h30", getParticipants(0, 5, 10, 13)),
+            new Reunion(4, "HR","#3F3F3F","Bâtiment A, salle 4", "15h30", getParticipants(3, 7, 15)),
+            new Reunion(5, "Interview","#4F4F4F","Bâtiment A, salle 12", "16h00", getParticipants(9, 11))
     );
-
-
 
     private static List<Participant> getParticipants (int ... args){
         List<Participant> participants = new ArrayList<>();
@@ -45,7 +43,7 @@ public abstract class DummyReunionGenerator {
         return participants;
     }
 
-    public List<Reunion> generateReunion (){
+    static List<Reunion> generateReunion (){
         return new ArrayList<>(DUMMY_REUNIONS);
     }
 }

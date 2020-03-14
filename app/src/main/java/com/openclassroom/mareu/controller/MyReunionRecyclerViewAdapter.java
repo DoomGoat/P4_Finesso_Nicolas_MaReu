@@ -1,33 +1,30 @@
 package com.openclassroom.mareu.controller;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openclassroom.mareu.R;
-import com.openclassroom.mareu.controller.ReunionFragment.OnListFragmentInteractionListener;
-import com.openclassroom.mareu.service.DummyReunionApiService.DummyItem;
+import com.openclassroom.mareu.model.Reunion;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunionRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final List<Reunion> mReunions;
 
-    public MyReunionRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    MyReunionRecyclerViewAdapter(List<Reunion> items) {
+        mReunions = items;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -36,44 +33,47 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        Reunion reunion = mReunions.get(position);
+        /**holder.mNeighbourName.setText(neighbour.getName());
+        Glide.with(holder.mNeighbourAvatar.getContext())
+                .load(neighbour.getAvatarUrl())
+                .apply(RequestOptions.circleCropTransform())
+                .into(holder.mNeighbourAvatar);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        /**holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+                EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
             }
-        });
+        });*/
+
+        /**holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new ClickNeighbourEvent(neighbour));
+            }
+        });*/
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mReunions.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+   public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_list_avatar)
+        public ImageView mNeighbourAvatar;
+        @BindView(R.id.item_list_reunion)
+        public TextView mReunionInfo;
+        @BindView(R.id.item_list_participant)
+        public TextView mParticipantsList;
+        @BindView(R.id.item_list_delete_button)
+        public ImageButton mDeleteButton;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            ButterKnife.bind(this, view);
         }
     }
 }
