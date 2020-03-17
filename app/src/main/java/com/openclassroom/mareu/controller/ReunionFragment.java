@@ -39,7 +39,7 @@ public class ReunionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApiService = DI.getNeighbourApiService();
+        mApiService = DI.getReunionApiService();
     }
 
     @Override
@@ -55,11 +55,9 @@ public class ReunionFragment extends Fragment {
     }
 
     /**
-     * Init the List of neighbours
+     * Init the List of reunions
      */
     public void initList() {
-
-
 
         mReunions = mApiService.getReunions();
 
@@ -85,14 +83,14 @@ public class ReunionFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    /**
+     /**
      * Fired if the user clicks on a delete button
      * @param event
      */
-    @Subscribe
-    public void onDeleteNeighbour(DeleteNeighbourEvent event) {
-        mApiService.deleteNeighbour(event.neighbour);
+    /**@Subscribe
+    public void onDeleteReunion(DeleteReunionEvent event) {
+        mApiService.deleteReunion(event.reunion);
         initList();
-    }
+    }*/
 
 }

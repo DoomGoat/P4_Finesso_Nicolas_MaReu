@@ -3,6 +3,8 @@ package com.openclassroom.mareu.controller;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,10 @@ import com.openclassroom.mareu.model.Reunion;
 
 import java.util.List;
 
-
 public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunionRecyclerViewAdapter.ViewHolder> {
 
     private final List<Reunion> mReunions;
+    RoundImage roundedImage;
 
     MyReunionRecyclerViewAdapter(List<Reunion> items) {
         mReunions = items;
@@ -35,11 +37,11 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Reunion reunion = mReunions.get(position);
-        /**holder.mNeighbourName.setText(neighbour.getName());
-        Glide.with(holder.mNeighbourAvatar.getContext())
-                .load(neighbour.getAvatarUrl())
-                .apply(RequestOptions.circleCropTransform())
-                .into(holder.mNeighbourAvatar);
+
+        holder.mReunionInfo.setText(reunion.getSubject());
+        Bitmap bm = BitmapFactory.decodeResource(holder.mReunionAvatar.getResources(), R.drawable.ic_launcher_background); //TODO
+        roundedImage = new RoundImage(bm);
+        holder.mReunionAvatar.setImageDrawable(roundedImage);
 
         /**holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +58,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         });*/
     }
 
+
     @Override
     public int getItemCount() {
         return mReunions.size();
@@ -63,7 +66,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
 
    public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_list_avatar)
-        public ImageView mNeighbourAvatar;
+        public ImageView mReunionAvatar;
         @BindView(R.id.item_list_reunion)
         public TextView mReunionInfo;
         @BindView(R.id.item_list_participant)
