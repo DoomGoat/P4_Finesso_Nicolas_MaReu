@@ -1,7 +1,5 @@
 package com.openclassroom.mareu.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,10 +11,10 @@ public class Reunion {
     private long id;
 
     /** Reunion subject */
-    private String subject;
+    private String name;
 
     /** Avatar */
-    private String avatarColor;
+    private int avatarColor;
 
     /** Location */
     private String location;
@@ -27,22 +25,28 @@ public class Reunion {
     /** Participant list */
     private List<Participant> participants;
 
+    /** Additional information */
+    private String info;
+
+
     /**
      * Constructor
      * @param id
-     * @param subject
+     * @param name
      * @param avatarColor
      * @param location
      * @param time
+     * @param info
      */
 
-    public Reunion(long id, String subject, String avatarColor, String location, String time, List<Participant> participants) {
+    public Reunion(long id, String name, int avatarColor, String location, String time, List<Participant> participants, String info) {
         this.id = id;
-        this.subject = subject;
+        this.name = name;
         this.avatarColor = avatarColor;
         this.location = location;
         this.time = time;
         this.participants = participants;
+        this.info = info;
     }
 
     public long getId() {
@@ -53,19 +57,19 @@ public class Reunion {
         this.id = id;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getName() {
+        return name;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAvatarColor() {
+    public int getAvatarColor() {
         return avatarColor;
     }
 
-    public void setAvatarColor(String avatarColor) {
+    public void setAvatarColor(int avatarColor) {
         this.avatarColor = avatarColor;
     }
 
@@ -91,6 +95,14 @@ public class Reunion {
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
 }

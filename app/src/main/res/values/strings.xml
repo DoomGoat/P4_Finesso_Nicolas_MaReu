@@ -2,4 +2,17 @@
     <string name="app_name">Ma Réu</string>
     <string name="participant">participant@lamzone.com, participant@lamzone.com, participant@lamzone.com</string>
     <string name="reunion_time_place">Réunion - Heure - Salle</string>
+    <string name="meeting_name">Meeting name</string>
+    <string name="add_a_meeting_room">Add a meeting room</string>
+    <string name="meeting_time">- Add time</string>
+    <string name="add_participants">Add participants</string>
+    <string name="about_the_meeting">About the meeting</string>
+    <string name="create_reunion">Create reunion</string>
+    <string-array name="meetingrooms">
+        <item>Mario</item>
+        <item>Luigi</item>
+        <item>Peach</item>
+        <item>Toad</item>
+        <item>Bowser</item>
+    </string-array>
 </resources>

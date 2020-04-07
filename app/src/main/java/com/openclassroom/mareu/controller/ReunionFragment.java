@@ -14,8 +14,12 @@ import android.view.ViewGroup;
 
 import com.openclassroom.mareu.R;
 import com.openclassroom.mareu.di.DI;
+import com.openclassroom.mareu.events.DeleteReunionEvent;
 import com.openclassroom.mareu.model.Reunion;
 import com.openclassroom.mareu.service.ReunionApiService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +49,7 @@ public class ReunionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_reunion_list, container, false);
+        View view = inflater.inflate(R.layout.activity_list_reunion, container, false);
         Context context = view.getContext();
         mRecyclerView = (RecyclerView) view;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -57,10 +61,9 @@ public class ReunionFragment extends Fragment {
     /**
      * Init the List of reunions
      */
-    public void initList() {
+    private void initList() {
 
         mReunions = mApiService.getReunions();
-
         mRecyclerView.setAdapter(new MyReunionRecyclerViewAdapter(mReunions));
     }
 
@@ -87,10 +90,10 @@ public class ReunionFragment extends Fragment {
      * Fired if the user clicks on a delete button
      * @param event
      */
-    /**@Subscribe
+    @Subscribe
     public void onDeleteReunion(DeleteReunionEvent event) {
         mApiService.deleteReunion(event.reunion);
         initList();
-    }*/
+    }
 
 }

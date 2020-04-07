@@ -1,6 +1,7 @@
 package com.openclassroom.mareu.service;
 
 
+import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class DummyReunionApiService implements ReunionApiService {
 
     private List<Reunion> reunions = DummyReunionGenerator.generateReunion();
+    private List<Participant> participants = DummyReunionGenerator.generateParticipant();
 
     @Override
     public List<Reunion> getReunions() {
@@ -25,6 +27,11 @@ public class DummyReunionApiService implements ReunionApiService {
     @Override
     public void createReunion(Reunion reunion) {
         reunions.add(reunion);
+    }
+
+    @Override
+    public List<Participant> getParticipants() {
+        return participants;
     }
 
 

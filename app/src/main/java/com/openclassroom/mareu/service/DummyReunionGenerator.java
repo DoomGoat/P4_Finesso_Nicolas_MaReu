@@ -1,5 +1,7 @@
 package com.openclassroom.mareu.service;
 
+import android.graphics.Color;
+
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 
@@ -27,15 +29,16 @@ public abstract class DummyReunionGenerator {
             new Participant(15, "Ludovic@lamzone.com")
     );
 
+
     private static List<Reunion> DUMMY_REUNIONS = Arrays.asList(
-            new Reunion(1, "Marketing","#FFFFFF","Bâtiment A, salle 12", "10h00", getParticipants(0, 2, 5, 6, 12)),
-            new Reunion(2, "Brainstorming","#1F1F1F","Bâtiment C, salle 14", "11h00", getParticipants(1, 4, 8, 14, 15)),
-            new Reunion(3, "Sales","#2F2F2F","Bâtiment B, salle 18", "14h30", getParticipants(0, 5, 10, 13)),
-            new Reunion(4, "HR","#3F3F3F","Bâtiment A, salle 4", "15h30", getParticipants(3, 7, 15)),
-            new Reunion(5, "Interview","#4F4F4F","Bâtiment A, salle 12", "16h00", getParticipants(9, 11))
+            new Reunion(1, "Marketing", 0xFF4c4f6a,"Peach", "10h00", getReunionParticipants(0, 2, 5, 6, 12),""),
+            new Reunion(2, "Brainstorming",0xFFd63535,"Mario", "11h00", getReunionParticipants(1, 4, 8, 3, 14),""),
+            new Reunion(3, "Sales",0xFFffee86,"Luigi", "14h30", getReunionParticipants(0, 5, 10, 13),""),
+            new Reunion(4, "HR",0xFF6fd446,"Bowser", "15h30", getReunionParticipants(3, 7, 14),""),
+            new Reunion(5, "Interview",0xFF4690d4, "Mario", "16h00", getReunionParticipants(9, 11),"")
     );
 
-    private static List<Participant> getParticipants (int ... args){
+    private static List<Participant> getReunionParticipants(int ... args){
         List<Participant> participants = new ArrayList<>();
         for(int x : args) {
             participants.add(DUMMY_PARTICIPANTS.get(x));
@@ -45,6 +48,10 @@ public abstract class DummyReunionGenerator {
 
     static List<Reunion> generateReunion (){
         return new ArrayList<>(DUMMY_REUNIONS);
+    }
+
+    static List<Participant> generateParticipant (){
+        return new ArrayList<>(DUMMY_PARTICIPANTS);
     }
 }
 
