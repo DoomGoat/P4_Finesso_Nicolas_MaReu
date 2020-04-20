@@ -31,11 +31,11 @@ public abstract class DummyReunionGenerator {
 
 
     private static List<Reunion> DUMMY_REUNIONS = Arrays.asList(
-            new Reunion(1, "Marketing", 0xFF4c4f6a,"Peach", "10h00", getReunionParticipants(0, 2, 5, 6, 12),""),
-            new Reunion(2, "Brainstorming",0xFFd63535,"Mario", "11h00", getReunionParticipants(1, 4, 8, 3, 14),""),
-            new Reunion(3, "Sales",0xFFffee86,"Luigi", "14h30", getReunionParticipants(0, 5, 10, 13),""),
-            new Reunion(4, "HR",0xFF6fd446,"Bowser", "15h30", getReunionParticipants(3, 7, 14),""),
-            new Reunion(5, "Interview",0xFF4690d4, "Mario", "16h00", getReunionParticipants(9, 11),"")
+            new Reunion(1, "Marketing", 0xFF4c4f6a,"Peach", "10:00","01/03/2020", getReunionParticipants(0, 2, 5, 6, 12),""),
+            new Reunion(2, "Brainstorming",0xFFd63535,"Mario", "11:00","01/03/2020", getReunionParticipants(1, 4, 8, 3, 14),""),
+            new Reunion(3, "Sales",0xFFffee86,"Luigi", "14:30","02/03/2020", getReunionParticipants(0, 5, 10, 13),""),
+            new Reunion(4, "HR",0xFF6fd446,"Bowser", "15:30","02/03/2020", getReunionParticipants(3, 7, 14),""),
+            new Reunion(5, "Interview",0xFF4690d4, "Mario", "12:00","03/03/2020", getReunionParticipants(9, 11),"")
     );
 
     private static List<Participant> getReunionParticipants(int ... args){

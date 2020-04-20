@@ -22,6 +22,9 @@ public class Reunion {
     /** Time */
     private String time;
 
+    /** Date */
+    private String date;
+
     /** Participant list */
     private List<Participant> participants;
 
@@ -36,15 +39,17 @@ public class Reunion {
      * @param avatarColor
      * @param location
      * @param time
+     * @param date
      * @param info
      */
 
-    public Reunion(long id, String name, int avatarColor, String location, String time, List<Participant> participants, String info) {
+    public Reunion(long id, String name, int avatarColor, String location, String time, String date, List<Participant> participants, String info) {
         this.id = id;
         this.name = name;
         this.avatarColor = avatarColor;
         this.location = location;
         this.time = time;
+        this.date = date;
         this.participants = participants;
         this.info = info;
     }
@@ -87,6 +92,14 @@ public class Reunion {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public List<Participant> getParticipants() {

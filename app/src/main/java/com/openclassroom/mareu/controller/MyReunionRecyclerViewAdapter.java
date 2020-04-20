@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.PorterDuff;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         StringBuilder reunionParticipants = new StringBuilder();
         for (int i = 0; i<participants.size(); i++){
             reunionParticipants.append(participants.get(i).getEmail());
-            if (i<participants.size()){
+            if (i<participants.size()-1){
                 reunionParticipants.append(", ");
             }
         }
