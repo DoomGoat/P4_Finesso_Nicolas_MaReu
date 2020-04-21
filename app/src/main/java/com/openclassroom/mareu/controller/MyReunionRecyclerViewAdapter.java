@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openclassroom.mareu.R;
+import com.openclassroom.mareu.events.ClickReunionEvent;
 import com.openclassroom.mareu.events.DeleteReunionEvent;
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
@@ -55,15 +56,15 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
             }
         });
 
-        /**holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EventBus.getDefault().post(new ClickNeighbourEvent(neighbour));
+                EventBus.getDefault().post(new ClickReunionEvent(reunion));
             }
-        });*/
+        });
     }
 
-    public String reunionParticipants (List<Participant> participants) {
+    public static String reunionParticipants(List<Participant> participants) {
         StringBuilder reunionParticipants = new StringBuilder();
         for (int i = 0; i<participants.size(); i++){
             reunionParticipants.append(participants.get(i).getEmail());

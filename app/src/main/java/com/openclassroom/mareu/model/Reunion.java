@@ -1,11 +1,15 @@
 package com.openclassroom.mareu.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Model object representing a Neighbour
  */
-public class Reunion {
+public class Reunion implements Parcelable{
 
     /** Identifier */
     private long id;
@@ -116,6 +120,46 @@ public class Reunion {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+
+        out.writeLong(id);
+        out.writeString(name);
+        out.writeInt(avatarColor);
+        out.writeString(location);
+        out.writeString(time);
+        out.writeString(date);
+        //out.writeTypedList(participants);
+        out.writeString(info);
+    }
+
+    public static final Creator<Reunion> CREATOR = new Creator<Reunion>() {
+        @Override
+        public Reunion createFromParcel(Parcel in) {
+            return new Reunion(in);
+        }
+
+        @Override
+        public Reunion[] newArray(int size) {
+            return new Reunion[size];
+        }
+    };
+
+    private Reunion(Parcel in){
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.avatarColor = in.readInt();
+        this.location = in.readString();
+        this.time = in.readString();
+        this.date = in.readString();
+        //in.readTypedList(participants, Participant.CREATOR);
     }
 
 }

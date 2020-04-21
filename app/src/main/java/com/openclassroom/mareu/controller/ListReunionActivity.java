@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.openclassroom.mareu.R;
 import com.openclassroom.mareu.di.DI;
+import com.openclassroom.mareu.events.ClickReunionEvent;
 import com.openclassroom.mareu.events.DeleteReunionEvent;
 import com.openclassroom.mareu.model.Reunion;
 import com.openclassroom.mareu.service.ReunionApiService;
@@ -197,6 +198,18 @@ public class ListReunionActivity extends AppCompatActivity {
     public void onDeleteReunion(DeleteReunionEvent event) {
         mApiService.deleteReunion(event.reunion);
         initList();
+    }
+
+    /**
+     * Fired if the user clicks on a neighbour fragment
+     * @param event
+     */
+    @Subscribe
+    public void onClickReunion(ClickReunionEvent event) {
+
+        Intent detailActivityIntent = new Intent(ListReunionActivity.this, DetailReunionActivity.class);
+        detailActivityIntent.putExtra("REUNION", event.reunion);
+        startActivity(detailActivityIntent);
     }
 
 
