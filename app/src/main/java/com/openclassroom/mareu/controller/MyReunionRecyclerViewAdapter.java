@@ -3,8 +3,11 @@ package com.openclassroom.mareu.controller;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
 import android.graphics.PorterDuff;
-import android.util.TypedValue;
+import android.os.Build;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +22,6 @@ import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunionRecyclerViewAdapter.ViewHolder> {
@@ -43,9 +44,15 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Reunion reunion = mReunions.get(position);
-        String reunionInfo = reunion.getName()+" - "+reunion.getTime()+" - "+reunion.getLocation();
+        String reunionInfo = reunion.getName()+" - "+ DateFormat.format("HH:mm", reunion.getBeginTime()).toString()+" - "+reunion.getLocation();
         holder.mReunionInfo.setText(reunionInfo);
-        holder.mReunionAvatar.getDrawable().setColorFilter(reunion.getAvatarColor(), PorterDuff.Mode.MULTIPLY);
+        //Setup avatar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            holder.mReunionAvatar.getDrawable().setColorFilter(new BlendModeColorFilter(reunion.getAvatarColor(), BlendMode.SRC_IN));
+        } else {
+            //noinspection deprecation
+            holder.mReunionAvatar.getDrawable().setColorFilter(reunion.getAvatarColor() , PorterDuff.Mode.SRC_IN);
+        }
         holder.mParticipantsList.setText(reunionParticipants(reunion.getParticipants()));
 
 

@@ -3,8 +3,9 @@ package com.openclassroom.mareu.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Model object representing a Neighbour
@@ -23,11 +24,11 @@ public class Reunion implements Parcelable{
     /** Location */
     private String location;
 
-    /** Time */
-    private String time;
+    /** Begin time */
+    private Date beginTime;
 
-    /** Date */
-    private String date;
+    /** End time */
+    private Date endTime;
 
     /** Participant list */
     private List<Participant> participants;
@@ -42,18 +43,18 @@ public class Reunion implements Parcelable{
      * @param name
      * @param avatarColor
      * @param location
-     * @param time
-     * @param date
+     * @param beginTime
+     * @param endTime
      * @param info
      */
 
-    public Reunion(long id, String name, int avatarColor, String location, String time, String date, List<Participant> participants, String info) {
+    public Reunion(long id, String name, int avatarColor, String location, Date beginTime, Date endTime, List<Participant> participants, String info) {
         this.id = id;
         this.name = name;
         this.avatarColor = avatarColor;
         this.location = location;
-        this.time = time;
-        this.date = date;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
         this.participants = participants;
         this.info = info;
     }
@@ -90,20 +91,20 @@ public class Reunion implements Parcelable{
         this.location = location;
     }
 
-    public String getTime() {
-        return time;
+    public Date getBeginTime() {
+        return beginTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
     }
 
-    public String getDate() {
-        return date;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public List<Participant> getParticipants() {
@@ -134,9 +135,9 @@ public class Reunion implements Parcelable{
         out.writeString(name);
         out.writeInt(avatarColor);
         out.writeString(location);
-        out.writeString(time);
-        out.writeString(date);
-        //out.writeTypedList(participants);
+        out.writeLong(beginTime.getTime());
+        out.writeLong(endTime.getTime());
+        out.writeParcelableList(participants, flags);
         out.writeString(info);
     }
 
@@ -157,9 +158,10 @@ public class Reunion implements Parcelable{
         this.name = in.readString();
         this.avatarColor = in.readInt();
         this.location = in.readString();
-        this.time = in.readString();
-        this.date = in.readString();
-        //in.readTypedList(participants, Participant.CREATOR);
+        this.beginTime = new Date (in.readLong());
+        this.endTime = new Date (in.readLong());
+        this.participants = in.readParcelableList(new ArrayList<Participant>(), Participant.class.getClassLoader());
+        this.info = in.readString();
     }
 
 }

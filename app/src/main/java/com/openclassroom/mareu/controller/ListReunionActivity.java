@@ -47,9 +47,10 @@ public class ListReunionActivity extends AppCompatActivity {
     List<Reunion> mReunions = new ArrayList<>();
     Boolean isDateFiltered = false;
     Boolean isLocationFiltered = false;
-    String dateFilter = "";
+    Date dateFilter;
     String [] listMeetingRooms;
     String locationFilter = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class ListReunionActivity extends AppCompatActivity {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        System.out.println(which);
                         locationFilter = listMeetingRooms[which];
                         initList();
                     }
@@ -101,6 +103,8 @@ public class ListReunionActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        isLocationFiltered = false;
+                        initList();
                     }
                 });
                 AlertDialog mDialog = mBuilder.create();
@@ -123,9 +127,7 @@ public class ListReunionActivity extends AppCompatActivity {
                                 calendar.set(Calendar.YEAR, year);
                                 calendar.set(Calendar.MONTH, month);
                                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                Date date = calendar.getTime();
-                                DateFormat.format("dd/MM/yyyy", date);
-                                dateFilter = DateFormat.format("dd/MM/yyyy", date).toString();
+                                dateFilter = calendar.getTime();
                                 initList();
 
                             }
@@ -148,23 +150,33 @@ public class ListReunionActivity extends AppCompatActivity {
      * Init the List of reunions
      */
     private void initList() {
-        if (isDateFiltered){
-            mReunions = new ArrayList<>();
+        mReunions = new ArrayList<>();
+        String sDate;
+        boolean bDate = false;
+        boolean bLocation;
+        if (isDateFiltered || isLocationFiltered){
             for (int i = 0; i < mApiService.getReunions().size(); i++){
-                if (mApiService.getReunions().get(i).getDate().equals(dateFilter)){
-                    mReunions.add(mApiService.getReunions().get(i));
+                sDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
+                bLocation = mApiService.getReunions().get(i).getLocation().equals(locationFilter);
+                if (dateFilter != null)
+                    bDate = sDate.equals(DateFormat.format("dd/MM/yyyy", dateFilter).toString());
+
+                if (isLocationFiltered && isDateFiltered) {
+                    if (bLocation && bDate) {
+                        mReunions.add(mApiService.getReunions().get(i));
+                    }
+                }
+                else if (isLocationFiltered){
+                    if (bLocation) {
+                        mReunions.add(mApiService.getReunions().get(i));
+                    }
+                }else {
+                    if (bDate) {
+                        mReunions.add(mApiService.getReunions().get(i));
+                    }
                 }
             }
-
-        }else if (isLocationFiltered){
-            mReunions = new ArrayList<>();
-            for (int i = 0; i < mApiService.getReunions().size(); i++){
-                if (mApiService.getReunions().get(i).getLocation().equals(locationFilter)){
-                    mReunions.add(mApiService.getReunions().get(i));
-                }
-            }
-
-        }else {
+        }else{
             mReunions = mApiService.getReunions();
         }
 
@@ -190,23 +202,15 @@ public class ListReunionActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    /**
-     * Fired if the user clicks on a delete button
-     * @param event
-     */
+
     @Subscribe
     public void onDeleteReunion(DeleteReunionEvent event) {
         mApiService.deleteReunion(event.reunion);
         initList();
     }
 
-    /**
-     * Fired if the user clicks on a neighbour fragment
-     * @param event
-     */
     @Subscribe
     public void onClickReunion(ClickReunionEvent event) {
-
         Intent detailActivityIntent = new Intent(ListReunionActivity.this, DetailReunionActivity.class);
         detailActivityIntent.putExtra("REUNION", event.reunion);
         startActivity(detailActivityIntent);

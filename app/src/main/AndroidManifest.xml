@@ -13,6 +13,9 @@
             android:name=".controller.AddReunionActivity"
             android:label="New reunion"/>
         <activity
+            android:name=".controller.DialogNumberPicker"
+            android:label="NumberPicker"/>
+        <activity
             android:name=".controller.DetailReunionActivity"
             android:label="Details"/>
         <activity

@@ -3,32 +3,25 @@ package com.openclassroom.mareu.service;
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 
+import java.util.Date;
 import java.util.List;
 
-public interface ReunionApiService {
-
-    /**
-     * Get all my Reunions
-     * @return {@link List}
-     */
+interface ReunionApiServiceB extends ReunionApiService {
+    @Override
     List<Reunion> getReunions();
 
-    /**
-     * Deletes a reunion
-     * @param reunion
-     */
+    @Override
     void deleteReunion(Reunion reunion);
 
-    /**
-     * Create a reunion
-     * @param reunion
-     */
+    @Override
     void createReunion(Reunion reunion);
 
-    /**
-     * Get all my Participants
-     * @return {@link List}
-     */
+    @Override
     List<Participant> getParticipants();
 
+    List<Participant> setReunionParticipants(int... args);
+
+    Date initBeginTime(String time, String date);
+
+    Date initEndTime(String time, String date);
 }

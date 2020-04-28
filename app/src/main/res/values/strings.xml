@@ -4,7 +4,7 @@
     <string name="reunion_time_place">Réunion - Heure - Salle</string>
     <string name="meeting_subject">Meeting subject</string>
     <string name="add_a_meeting_room">Add meeting room</string>
-    <string name="meeting_time">Add meeting time</string>
+    <string name="meeting_time">Add time</string>
     <string name="add_participants">Add participants</string>
     <string name="about_the_meeting">About the meeting</string>
     <string name="create_reunion">Create reunion</string>
@@ -13,6 +13,13 @@
     <string name="filter_by_date">Filter by date</string>
     <string name="filter_by_location">Filter by location</string>
     <string name="clear_filter">Clear filter</string>
+    <string name="add_a_duration">Add duration</string>
+    <string name="avatar">Avatar</string>
+    <string name="delete">Delete</string>
+    <string name="dash">-</string>
+    <string name="until">until</string>
+    <string name="duration_of_the_meeting">Duration of the meeting</string>
+    <string name="double_dot">:</string>
     <string-array name="meetingrooms">
         <item>Mario</item>
         <item>Luigi</item>
