@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -24,10 +23,10 @@ public class DialogNumberPicker extends AppCompatDialogFragment {
     private DialogNumberPickerListener mListener;
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_number_picker, null);
+        View view = inflater.inflate(R.layout.dialog_number_picker, null); //TODO
 
         builder.setView(view)
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {

@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/add_reunion_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -25,7 +26,7 @@
                     android:id="@+id/add_avatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="6dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="10dp"
                     android:contentDescription="@string/avatar"
@@ -57,7 +58,7 @@
                 android:id="@+id/add_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="50dp"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_date_range_black_24dp"
@@ -71,7 +72,7 @@
                 android:id="@+id/add_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_domain_black_24dp"
@@ -84,7 +85,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
@@ -127,9 +128,9 @@
                 android:id="@+id/add_participants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="50dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_person_add_black_24dp"
                 android:drawablePadding="10dp"
@@ -143,9 +144,9 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/reunionSubject"

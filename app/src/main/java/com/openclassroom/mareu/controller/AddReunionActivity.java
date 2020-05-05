@@ -1,6 +1,4 @@
 package com.openclassroom.mareu.controller;
-
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -31,11 +29,9 @@ import com.openclassroom.mareu.R;
 import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
+import com.openclassroom.mareu.model.Room;
+import com.openclassroom.mareu.service.DummyReunionGenerator;
 import com.openclassroom.mareu.service.ReunionApiService;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,12 +61,13 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
     String[] listMeetingRooms;
     ArrayList<String> participantsList;
     List<Participant> meetingParticipants = new ArrayList<>();
-    String room;
+    Room room;
     Date beginTime;
     Date endTime;
     Date duration;
-    String timeSet;
-    String dateSet = DateFormat.format("dd/MM/yyyy", Calendar.getInstance().getTime()).toString();
+    Calendar beginCalendar = Calendar.getInstance();
+    //Fix GMT offset
+    long currentGMT = TimeZone.getDefault().getRawOffset();
     String unavailableMessage;
 
 
@@ -92,8 +89,8 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         addButton = findViewById(R.id.add_button);
         dash = findViewById(R.id.dash);
         mReunionColor = ((int)(Math.random()*16777215)) | (0xFF << 24);
-        listMeetingRooms = getResources().getStringArray(R.array.meetingrooms);
         participantsList = new ArrayList<>();
+        listMeetingRooms = DummyReunionGenerator.listRoom();
 
         //Setup avatar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -145,13 +142,11 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.set(Calendar.YEAR, year);
-                                calendar.set(Calendar.MONTH, month);
-                                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                dateSet = DateFormat.format("dd/MM/yyyy", calendar.getTime()).toString();
+                                beginCalendar.set(Calendar.YEAR, year);
+                                beginCalendar.set(Calendar.MONTH, month);
+                                beginCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                String dateSet = DateFormat.format("dd/MM/yyyy", beginCalendar.getTime()).toString();
                                 dateInput.setText(dateSet);
-                                System.out.println("DATE SET : "+calendar.getTime());
                                 enableButtonIfReady();
                             }
                         }, year, month, day);
@@ -169,11 +164,11 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddReunionActivity.this);
                 mBuilder.setTitle("Meeting rooms available");
                 mBuilder.setSingleChoiceItems(listMeetingRooms, -1, new DialogInterface.OnClickListener() {
-                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        room = listMeetingRooms[which];
-                        roomInput.setText("Meeting in the "+room+" room");
+                        room = mApiService.getRooms().get(which);
+                        String roomSet = "Meeting in the "+listMeetingRooms[which]+" room";
+                        roomInput.setText(roomSet);
 
                     }
                 });
@@ -201,15 +196,22 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 // time picker dialog
                 mTimePicker = new TimePickerDialog(AddReunionActivity.this,android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
                         new TimePickerDialog.OnTimeSetListener() {
-                            @SuppressLint("SetTextI18n")//TODO
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                timeSet = checkDigit(sHour)+":"+checkDigit(sMinute);
-                                timeInput.setText("At "+timeSet);
-                                System.out.println("TIME SET : "+timeSet);
+                                beginCalendar.set(Calendar.HOUR_OF_DAY, sHour);
+                                beginCalendar.set(Calendar.MINUTE, sMinute);
+                                beginCalendar.set(Calendar.SECOND, 0);
+                                String timeSet = "At "+DateFormat.format("HH:mm", beginCalendar.getTime()).toString();
+                                timeInput.setText(timeSet);
                                 enableButtonIfReady();
+                                //Enable duration picker
                                 durationInput.setAlpha(1);
                                 durationInput.setEnabled(true);
+                                //Update end time if already set
+                                if (durationInput.getText().length()>0){
+                                    updateTimes();
+                                    durationInput.setText(DateFormat.format("HH:mm", endTime));
+                                }
                             }
                         }, hour, minutes, true);
                 Objects.requireNonNull(mTimePicker.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
@@ -242,11 +244,6 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    beginTime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(dateSet+" "+timeSet);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 Reunion reunion = new Reunion(
                         System.currentTimeMillis(),
                         Objects.requireNonNull(nameInput.getEditText()).getText().toString(),
@@ -296,10 +293,6 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         String comparedMeetingTimeBegin = "";
         String comparedMeetingTimeEnd = "";
         for (int i = 0; i < mApiService.getReunions().size(); i++){
-            System.out.println("SELECTED DATE : "+ beginTime);
-            System.out.println("SELECTED DATE LONG: "+ beginTime.getTime());
-            System.out.println("COMPARING DATE : "+ mApiService.getReunions().get(i).getBeginTime());
-            System.out.println("COMPARING DATE LONG: "+ mApiService.getReunions().get(i).getBeginTime().getTime());
 
             //Compare times with an interval
             long time1 = beginTime.getTime();
@@ -308,14 +301,14 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
             long time4 = mApiService.getReunions().get(i).getEndTime().getTime();
 
             if ((time1 <= time3 && time2 >= time3) || (time1 <= time4 && time2 >= time4)||(time1 >= time3 && time2 <= time4)){
-                if (room.equals(mApiService.getReunions().get(i).getLocation())){
+                if (room.getRoom().equals(mApiService.getReunions().get(i).getLocation().getRoom())){
                     comparedMeetingTimeBegin = DateFormat.format("HH:mm", time3).toString();
                     comparedMeetingTimeEnd = DateFormat.format("HH:mm", time4).toString();
                     available = false;
                 }
             }
         }
-        unavailableMessage = "The "+room+" meeting room is not available between "+ comparedMeetingTimeBegin +" and "+comparedMeetingTimeEnd+"."+"\n"+"\n"+"Please select another meeting room or try for another time slot.";
+        unavailableMessage = "The "+room.getRoom()+" meeting room is not available between "+ comparedMeetingTimeBegin +" and "+comparedMeetingTimeEnd+"."+"\n"+"\n"+"Please select another meeting room or try for another time slot.";
         return available;
     }
 
@@ -324,7 +317,8 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 && timeInput.getText().length() > 0
                 && dateInput.getText().length() > 0
                 && roomInput.getText().length() > 0
-                && participantsInput.getText().length() > 0);
+                && participantsInput.getText().length() > 0
+                && durationInput.getText().length() > 0);
 
         if (isReady){
             addButton.setEnabled(true);
@@ -332,20 +326,19 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         }
     }
 
+    public  void updateTimes () {
+        beginTime = beginCalendar.getTime();
+        endTime = new Date(beginTime.getTime()+duration.getTime()+currentGMT);
+    }
+
     @Override
     public void durationListener(int hour, int minute) {
-        try {
-            duration = new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(hour+":"+minute);
-            beginTime = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault()).parse(dateSet+" "+timeSet);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //Fix GMT offset
-        long currentGMT = TimeZone.getDefault().getRawOffset();
-        duration = new Date(duration.getTime()+currentGMT);
-
-        if (beginTime != null)
-        endTime = new Date(beginTime.getTime()+duration.getTime());
+        Calendar durationCal = Calendar.getInstance(Locale.getDefault());
+        durationCal.setTime(new Date(0));
+        durationCal.set(Calendar.HOUR_OF_DAY, hour);
+        durationCal.set(Calendar.MINUTE, minute);
+        duration = durationCal.getTime();
+        updateTimes();
 
         System.out.println("BEGIN TIME : "+beginTime);
         System.out.println("BEGIN TIME LONG : "+beginTime.getTime());
@@ -359,9 +352,5 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
 
         durationInput.setText(DateFormat.format("HH:mm", endTime));
         dash.setText(R.string.until);
-    }
-
-    public String checkDigit(int number) {
-        return number <= 9 ? "0" + number : String.valueOf(number);
     }
 }

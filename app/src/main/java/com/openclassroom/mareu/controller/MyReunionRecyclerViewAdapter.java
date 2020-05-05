@@ -44,7 +44,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Reunion reunion = mReunions.get(position);
-        String reunionInfo = reunion.getName()+" - "+ DateFormat.format("HH:mm", reunion.getBeginTime()).toString()+" - "+reunion.getLocation();
+        String reunionInfo = reunion.getName()+" - "+ DateFormat.format("HH:mm", reunion.getBeginTime()).toString()+" - "+reunion.getLocation().getRoom();
         holder.mReunionInfo.setText(reunionInfo);
         //Setup avatar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -77,12 +77,12 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
             reunionParticipants.append(participants.get(i).getEmail());
             if (i<participants.size()-1){
                 reunionParticipants.append(", ");
+            }else {
+                reunionParticipants.append(".");
             }
         }
         return reunionParticipants.toString();
-
     }
-
 
     @Override
     public int getItemCount() {

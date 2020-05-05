@@ -78,7 +78,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/detail_info_time"
+                            android:id="@+id/detail_info_begin_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"

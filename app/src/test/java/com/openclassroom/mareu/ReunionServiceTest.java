@@ -55,7 +55,7 @@ public class ReunionServiceTest {
 
     @Test
     public void createReunionWithSuccess() {
-        Reunion reunionToCreate = new Reunion(System.currentTimeMillis(),"",0xFFFFFFFF,"", DummyReunionGenerator.initBeginTime("10:00","01/01/2020"),DummyReunionGenerator.initBeginTime("12:00","01/01/2020"),DummyReunionGenerator.getReunionParticipants(1,2,3),"");
+        Reunion reunionToCreate = new Reunion(System.currentTimeMillis(),"",0xFFFFFFFF,service.getRooms().get(0), new Date(), new Date(), service.getParticipants(),"");
         service.createReunion(reunionToCreate);
         assertTrue(service.getReunions().contains(reunionToCreate));
     }

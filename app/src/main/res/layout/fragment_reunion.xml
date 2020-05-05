@@ -24,24 +24,30 @@
 
     <TextView
         android:id="@+id/item_list_info"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/reunion_time_place"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/item_list_participant"
+        app:layout_constraintEnd_toStartOf="@id/item_list_delete_button"
         app:layout_constraintStart_toEndOf="@+id/item_list_avatar"
         app:layout_constraintTop_toTopOf="@+id/item_list_avatar" />
 
     <TextView
         android:id="@+id/item_list_participant"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
         android:singleLine="true"
         android:text="@string/participant"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/item_list_avatar"
+        app:layout_constraintEnd_toStartOf="@id/item_list_delete_button"
         app:layout_constraintStart_toEndOf="@+id/item_list_avatar"
         app:layout_constraintTop_toBottomOf="@+id/item_list_info" />
 

@@ -1,6 +1,5 @@
 package com.openclassroom.mareu.controller;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
@@ -20,7 +19,7 @@ public class DetailReunionActivity extends AppCompatActivity {
     TextView mSubjectTextView;
     TextView mDateTextView;
     TextView mLocationTextView;
-    TextView mTimeTextView;
+    TextView mBeginTimeTextView;
     TextView mEndTimeTextView;
     TextView mParticipantsTextView;
     TextView mAboutTitleTextView;
@@ -36,7 +35,7 @@ public class DetailReunionActivity extends AppCompatActivity {
         mSubjectTextView = findViewById(R.id.detail_subject);
         mDateTextView = findViewById(R.id.detail_date);
         mLocationTextView = findViewById(R.id.detail_info_location);
-        mTimeTextView = findViewById(R.id.detail_info_time);
+        mBeginTimeTextView = findViewById(R.id.detail_info_begin_time);
         mEndTimeTextView = findViewById(R.id.detail_info_end_time);
         mParticipantsTextView = findViewById(R.id.detail_info_participant);
         mAboutTitleTextView = findViewById(R.id.detail_about_title);
@@ -57,18 +56,20 @@ public class DetailReunionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("SetTextI18n")//TODO
     private void displayDetails(final Reunion reunion) {
-
+        String locationTV = "Meeting in the " + reunion.getLocation().getRoom() +" room.";
+        String beginTimeTV= "Meeting from " + DateFormat.format("HH:mm", reunion.getBeginTime())+" to ";
+        String endTimeTV = DateFormat.format("HH:mm", reunion.getEndTime())+".";
+        String descriptionTV = "No more information.";
         mSubjectTextView.setText(reunion.getName());
         mDateTextView.setText(DateFormat.format("dd/MM/yyyy", reunion.getBeginTime()));
-        mLocationTextView.setText("Meeting in the " + reunion.getLocation() +" room." );
-        mTimeTextView.setText("Meeting from " + DateFormat.format("HH:mm", reunion.getBeginTime())+" to ");
-        mEndTimeTextView.setText(DateFormat.format("HH:mm", reunion.getEndTime())+".");
+        mLocationTextView.setText(locationTV);
+        mBeginTimeTextView.setText(beginTimeTV);
+        mEndTimeTextView.setText(endTimeTV);
         mParticipantsTextView.setText(MyReunionRecyclerViewAdapter.reunionParticipants(reunion.getParticipants()));
         mAboutTitleTextView.setText(R.string.about_the_meeting);
         if (reunion.getInfo().length() < 2) {
-            mAboutDescriptionTextView.setText("No more information.");
+            mAboutDescriptionTextView.setText(descriptionTV);
         }else{
             mAboutDescriptionTextView.setText(reunion.getInfo());
         }

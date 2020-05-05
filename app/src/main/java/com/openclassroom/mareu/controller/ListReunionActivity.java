@@ -24,6 +24,7 @@ import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.events.ClickReunionEvent;
 import com.openclassroom.mareu.events.DeleteReunionEvent;
 import com.openclassroom.mareu.model.Reunion;
+import com.openclassroom.mareu.service.DummyReunionGenerator;
 import com.openclassroom.mareu.service.ReunionApiService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,8 +60,8 @@ public class ListReunionActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.toolbar);
         mAddReunionButton = findViewById(R.id.add_reunion);
-        mRecyclerView = findViewById(R.id.list);
-        listMeetingRooms = getResources().getStringArray(R.array.meetingrooms);
+        mRecyclerView = findViewById(R.id.list_reunion);
+        listMeetingRooms = DummyReunionGenerator.listRoom();
 
         setSupportActionBar(mToolbar);
         mRecyclerViewAdapter = new  MyReunionRecyclerViewAdapter(mApiService.getReunions());
@@ -157,7 +158,7 @@ public class ListReunionActivity extends AppCompatActivity {
         if (isDateFiltered || isLocationFiltered){
             for (int i = 0; i < mApiService.getReunions().size(); i++){
                 sDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
-                bLocation = mApiService.getReunions().get(i).getLocation().equals(locationFilter);
+                bLocation = mApiService.getReunions().get(i).getLocation().getRoom().equals(locationFilter);
                 if (dateFilter != null)
                     bDate = sDate.equals(DateFormat.format("dd/MM/yyyy", dateFilter).toString());
 

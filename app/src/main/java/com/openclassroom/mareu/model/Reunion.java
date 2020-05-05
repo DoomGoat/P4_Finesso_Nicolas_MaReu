@@ -22,7 +22,7 @@ public class Reunion implements Parcelable{
     private int avatarColor;
 
     /** Location */
-    private String location;
+    private Room location;
 
     /** Begin time */
     private Date beginTime;
@@ -48,7 +48,7 @@ public class Reunion implements Parcelable{
      * @param info
      */
 
-    public Reunion(long id, String name, int avatarColor, String location, Date beginTime, Date endTime, List<Participant> participants, String info) {
+    public Reunion(long id, String name, int avatarColor, Room location, Date beginTime, Date endTime, List<Participant> participants, String info) {
         this.id = id;
         this.name = name;
         this.avatarColor = avatarColor;
@@ -83,11 +83,11 @@ public class Reunion implements Parcelable{
         this.avatarColor = avatarColor;
     }
 
-    public String getLocation() {
+    public Room getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Room location) {
         this.location = location;
     }
 
@@ -134,7 +134,7 @@ public class Reunion implements Parcelable{
         out.writeLong(id);
         out.writeString(name);
         out.writeInt(avatarColor);
-        out.writeString(location);
+        out.writeParcelable(location, flags);
         out.writeLong(beginTime.getTime());
         out.writeLong(endTime.getTime());
         out.writeParcelableList(participants, flags);
@@ -157,7 +157,7 @@ public class Reunion implements Parcelable{
         this.id = in.readLong();
         this.name = in.readString();
         this.avatarColor = in.readInt();
-        this.location = in.readString();
+        this.location = in.readParcelable(Room.class.getClassLoader());
         this.beginTime = new Date (in.readLong());
         this.endTime = new Date (in.readLong());
         this.participants = in.readParcelableList(new ArrayList<Participant>(), Participant.class.getClassLoader());

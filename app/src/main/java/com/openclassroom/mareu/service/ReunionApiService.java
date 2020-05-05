@@ -2,6 +2,7 @@ package com.openclassroom.mareu.service;
 
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
+import com.openclassroom.mareu.model.Room;
 
 import java.util.List;
 
@@ -24,6 +25,12 @@ public interface ReunionApiService {
      * @param reunion
      */
     void createReunion(Reunion reunion);
+
+    /**
+     * Get all my Rooms
+     * @return {@link List}
+     */
+    List<Room> getRooms();
 
     /**
      * Get all my Participants
