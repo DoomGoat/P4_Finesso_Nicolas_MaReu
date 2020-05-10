@@ -23,6 +23,18 @@
 
 
     <TextView
+        android:id="@+id/item_list_date"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/date"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/item_list_avatar"
+        app:layout_constraintStart_toStartOf="@id/item_list_avatar" />
+
+    <TextView
         android:id="@+id/item_list_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

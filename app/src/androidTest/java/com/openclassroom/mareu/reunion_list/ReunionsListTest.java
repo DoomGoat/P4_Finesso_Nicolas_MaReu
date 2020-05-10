@@ -3,14 +3,11 @@ package com.openclassroom.mareu.reunion_list;
 
 import android.text.format.DateFormat;
 import android.widget.DatePicker;
-import android.widget.NumberPicker;
-import android.widget.ScrollView;
 import android.widget.TimePicker;
 
 import androidx.test.espresso.action.GeneralLocation;
 import androidx.test.espresso.action.GeneralSwipeAction;
 import androidx.test.espresso.action.Press;
-import androidx.test.espresso.action.ScrollToAction;
 import androidx.test.espresso.action.Swipe;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
@@ -23,7 +20,6 @@ import com.openclassroom.mareu.service.ReunionApiService;
 import com.openclassroom.mareu.utils.ClickReunionViewAction;
 import com.openclassroom.mareu.utils.DeleteViewAction;
 import com.openclassroom.mareu.R;
-import com.openclassroom.mareu.utils.FillAddReunionViewAction;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -33,7 +29,6 @@ import org.junit.Test;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -60,7 +55,7 @@ public class ReunionsListTest {
 
     @Rule
     public ActivityTestRule<ListReunionActivity> mActivityRule =
-            new ActivityTestRule(ListReunionActivity.class);
+            new ActivityTestRule<>(ListReunionActivity.class);
 
     @Before
     public void setUp() {
@@ -238,6 +233,6 @@ public class ReunionsListTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition(positionTest, new ClickReunionViewAction()));
         String reunionSubject = service.getReunions().get(positionTest).getName();
         // Then : the subject field is the subject of the reunion
-        onView(withId(R.id.detail_subject)).check(matches(withText(reunionSubject)));//TODO
+        onView(withId(R.id.detail_subject)).check(matches(withText(reunionSubject)));
     }
 }

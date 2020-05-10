@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
@@ -26,15 +27,15 @@ public class DialogNumberPicker extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_number_picker, null); //TODO
+        View view = inflater.inflate(R.layout.dialog_number_picker, (ViewGroup) getView());
 
         builder.setView(view)
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.durationListener(hour, minute);
@@ -48,7 +49,7 @@ public class DialogNumberPicker extends AppCompatDialogFragment {
         numberPickerHour.setMaxValue(12);
 
         //Minutes by steps of x
-        int interval = 10;
+        final int interval = 10;
         String[] minutesValues = new String[60/interval];
         for(int i = 0; i < minutesValues.length; i++)
         {
@@ -68,7 +69,7 @@ public class DialogNumberPicker extends AppCompatDialogFragment {
         numberPickerMinute.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                minute = newVal*10;
+                minute = newVal*interval;
             }
         });
 

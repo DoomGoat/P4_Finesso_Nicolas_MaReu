@@ -16,13 +16,11 @@ public interface ReunionApiService {
 
     /**
      * Deletes a reunion
-     * @param reunion
      */
     void deleteReunion(Reunion reunion);
 
     /**
      * Create a reunion
-     * @param reunion
      */
     void createReunion(Reunion reunion);
 

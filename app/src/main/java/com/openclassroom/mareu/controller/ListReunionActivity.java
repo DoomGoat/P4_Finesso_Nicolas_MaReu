@@ -24,7 +24,6 @@ import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.events.ClickReunionEvent;
 import com.openclassroom.mareu.events.DeleteReunionEvent;
 import com.openclassroom.mareu.model.Reunion;
-import com.openclassroom.mareu.service.DummyReunionGenerator;
 import com.openclassroom.mareu.service.ReunionApiService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,7 +60,7 @@ public class ListReunionActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mAddReunionButton = findViewById(R.id.add_reunion);
         mRecyclerView = findViewById(R.id.list_reunion);
-        listMeetingRooms = DummyReunionGenerator.listRoom();
+        listMeetingRooms = listRoom();
 
         setSupportActionBar(mToolbar);
         mRecyclerViewAdapter = new  MyReunionRecyclerViewAdapter(mApiService.getReunions());
@@ -89,7 +88,7 @@ public class ListReunionActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.menuItem1:
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ListReunionActivity.this);
-                mBuilder.setTitle("Meeting rooms filter");
+                mBuilder.setTitle(R.string.meeting_room_filter);
                 mBuilder.setSingleChoiceItems(listMeetingRooms, -1, new DialogInterface.OnClickListener() {
                     @SuppressLint("SetTextI18n")
                     @Override
@@ -99,8 +98,8 @@ public class ListReunionActivity extends AppCompatActivity {
                         initList();
                     }
                 });
-                mBuilder.setPositiveButton("OK", null);
-                mBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton(R.string.ok, null);
+                mBuilder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -155,39 +154,44 @@ public class ListReunionActivity extends AppCompatActivity {
         String sDate;
         boolean bDate = false;
         boolean bLocation;
+
         if (isDateFiltered || isLocationFiltered){
             for (int i = 0; i < mApiService.getReunions().size(); i++){
-                sDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
+                //Comparing rooms
                 bLocation = mApiService.getReunions().get(i).getLocation().getRoom().equals(locationFilter);
+                //Comparing dates
+                sDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
                 if (dateFilter != null)
                     bDate = sDate.equals(DateFormat.format("dd/MM/yyyy", dateFilter).toString());
 
+                //If both are filtered and match filter, add the meeting to the list
                 if (isLocationFiltered && isDateFiltered) {
                     if (bLocation && bDate) {
                         mReunions.add(mApiService.getReunions().get(i));
                     }
-                }
-                else if (isLocationFiltered){
+
+                //If only the room is filtered and match filter, add the meeting to the list
+                } else if (isLocationFiltered) {
                     if (bLocation) {
                         mReunions.add(mApiService.getReunions().get(i));
                     }
-                }else {
+                //If only the date is filtered and match filter, add the meeting to the list
+                } else {
                     if (bDate) {
                         mReunions.add(mApiService.getReunions().get(i));
                     }
                 }
             }
-        }else{
+        //Without filter just show all meetings
+        } else {
             mReunions = mApiService.getReunions();
         }
-
         mRecyclerView.setAdapter(new MyReunionRecyclerViewAdapter(mReunions));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         initList();
     }
 
@@ -217,5 +221,11 @@ public class ListReunionActivity extends AppCompatActivity {
         startActivity(detailActivityIntent);
     }
 
-
+    public String [] listRoom () {
+        String [] list = new String [mApiService.getRooms().size()];
+        for (int i = 0 ; i < mApiService.getRooms().size(); i++){
+            list[i] = mApiService.getRooms().get(i).getRoom();
+        }
+        return list;
+    }
 }

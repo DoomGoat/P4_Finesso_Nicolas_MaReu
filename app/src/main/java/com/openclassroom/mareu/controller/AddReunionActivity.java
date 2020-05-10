@@ -30,7 +30,6 @@ import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 import com.openclassroom.mareu.model.Room;
-import com.openclassroom.mareu.service.DummyReunionGenerator;
 import com.openclassroom.mareu.service.ReunionApiService;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,7 +89,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         dash = findViewById(R.id.dash);
         mReunionColor = ((int)(Math.random()*16777215)) | (0xFF << 24);
         participantsList = new ArrayList<>();
-        listMeetingRooms = DummyReunionGenerator.listRoom();
+        listMeetingRooms = listRoom();
 
         //Setup avatar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -162,18 +161,17 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddReunionActivity.this);
-                mBuilder.setTitle("Meeting rooms available");
+                mBuilder.setTitle(R.string.meeting_room_available);
                 mBuilder.setSingleChoiceItems(listMeetingRooms, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         room = mApiService.getRooms().get(which);
-                        String roomSet = "Meeting in the "+listMeetingRooms[which]+" room";
-                        roomInput.setText(roomSet);
+                        roomInput.setText(getString(R.string.meeting_in_the_x_room, listMeetingRooms[which]));
 
                     }
                 });
-                mBuilder.setPositiveButton("OK", null);
-                mBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton(R.string.ok, null);
+                mBuilder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -201,8 +199,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                                 beginCalendar.set(Calendar.HOUR_OF_DAY, sHour);
                                 beginCalendar.set(Calendar.MINUTE, sMinute);
                                 beginCalendar.set(Calendar.SECOND, 0);
-                                String timeSet = "At "+DateFormat.format("HH:mm", beginCalendar.getTime()).toString();
-                                timeInput.setText(timeSet);
+                                timeInput.setText(getString(R.string.at_x, DateFormat.format("HH:mm", beginCalendar.getTime()).toString()));
                                 enableButtonIfReady();
                                 //Enable duration picker
                                 durationInput.setAlpha(1);
@@ -233,14 +230,12 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void afterTextChanged(Editable s) {
-                enableButtonIfReady();
-            }
+            public void afterTextChanged(Editable s) { enableButtonIfReady(); }
         });
 
 
 
-        //Create the new reunion
+        //Create the new reunion AND check if other meeting overlap
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,9 +255,9 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 }else {
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddReunionActivity.this);
                             mBuilder.setCancelable(true);
-                            mBuilder.setTitle("Room unavailable");
+                            mBuilder.setTitle(R.string.meeting_room_unavailable);
                             mBuilder.setMessage(unavailableMessage);
-                            mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
@@ -308,7 +303,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 }
             }
         }
-        unavailableMessage = "The "+room.getRoom()+" meeting room is not available between "+ comparedMeetingTimeBegin +" and "+comparedMeetingTimeEnd+"."+"\n"+"\n"+"Please select another meeting room or try for another time slot.";
+        unavailableMessage = getString(R.string.unavailable_message, room.getRoom(), comparedMeetingTimeBegin, comparedMeetingTimeEnd );
         return available;
     }
 
@@ -326,11 +321,6 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         }
     }
 
-    public  void updateTimes () {
-        beginTime = beginCalendar.getTime();
-        endTime = new Date(beginTime.getTime()+duration.getTime()+currentGMT);
-    }
-
     @Override
     public void durationListener(int hour, int minute) {
         Calendar durationCal = Calendar.getInstance(Locale.getDefault());
@@ -340,17 +330,20 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         duration = durationCal.getTime();
         updateTimes();
 
-        System.out.println("BEGIN TIME : "+beginTime);
-        System.out.println("BEGIN TIME LONG : "+beginTime.getTime());
-        System.out.println("COMPARING DATE : "+ mApiService.getReunions().get(4).getBeginTime());
-        System.out.println("COMPARING DATE LONG: "+ mApiService.getReunions().get(4).getBeginTime().getTime());
-        System.out.println("DURATION TIME : "+duration);
-        System.out.println("DURATION TIME LONG: "+duration.getTime());
-        System.out.println("END TIME : "+endTime);
-        System.out.println("END TIME LONG : "+endTime.getTime());
-        System.out.println("CURRENT TIME ZONE : "+currentGMT);
-
         durationInput.setText(DateFormat.format("HH:mm", endTime));
         dash.setText(R.string.until);
+    }
+
+    public  void updateTimes () {
+        beginTime = beginCalendar.getTime();
+        endTime = new Date(beginTime.getTime()+duration.getTime()+currentGMT);
+    }
+
+    public String [] listRoom () {
+        String [] list = new String [mApiService.getRooms().size()];
+        for (int i = 0 ; i < mApiService.getRooms().size(); i++){
+            list[i] = mApiService.getRooms().get(i).getRoom();
+        }
+        return list;
     }
 }

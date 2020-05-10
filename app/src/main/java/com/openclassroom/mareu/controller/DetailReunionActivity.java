@@ -19,8 +19,7 @@ public class DetailReunionActivity extends AppCompatActivity {
     TextView mSubjectTextView;
     TextView mDateTextView;
     TextView mLocationTextView;
-    TextView mBeginTimeTextView;
-    TextView mEndTimeTextView;
+    TextView mTimeTextView;
     TextView mParticipantsTextView;
     TextView mAboutTitleTextView;
     TextView mAboutDescriptionTextView;
@@ -35,8 +34,7 @@ public class DetailReunionActivity extends AppCompatActivity {
         mSubjectTextView = findViewById(R.id.detail_subject);
         mDateTextView = findViewById(R.id.detail_date);
         mLocationTextView = findViewById(R.id.detail_info_location);
-        mBeginTimeTextView = findViewById(R.id.detail_info_begin_time);
-        mEndTimeTextView = findViewById(R.id.detail_info_end_time);
+        mTimeTextView = findViewById(R.id.detail_info_time);
         mParticipantsTextView = findViewById(R.id.detail_info_participant);
         mAboutTitleTextView = findViewById(R.id.detail_about_title);
         mAboutDescriptionTextView = findViewById(R.id.detail_about_text);
@@ -57,23 +55,21 @@ public class DetailReunionActivity extends AppCompatActivity {
     }
 
     private void displayDetails(final Reunion reunion) {
-        String locationTV = "Meeting in the " + reunion.getLocation().getRoom() +" room.";
-        String beginTimeTV= "Meeting from " + DateFormat.format("HH:mm", reunion.getBeginTime())+" to ";
-        String endTimeTV = DateFormat.format("HH:mm", reunion.getEndTime())+".";
-        String descriptionTV = "No more information.";
+        mAvatarImageView.setBackgroundColor(reunion.getAvatarColor());
         mSubjectTextView.setText(reunion.getName());
         mDateTextView.setText(DateFormat.format("dd/MM/yyyy", reunion.getBeginTime()));
-        mLocationTextView.setText(locationTV);
-        mBeginTimeTextView.setText(beginTimeTV);
-        mEndTimeTextView.setText(endTimeTV);
+        mLocationTextView.setText(getString(R.string.meeting_in_the_x_room, reunion.getLocation().getRoom()));
+        mTimeTextView.setText(getString(R.string.meeting_from_x_to_x,
+                DateFormat.format("HH:mm", reunion.getBeginTime()),
+                DateFormat.format("HH:mm", reunion.getEndTime())));
         mParticipantsTextView.setText(MyReunionRecyclerViewAdapter.reunionParticipants(reunion.getParticipants()));
+
         mAboutTitleTextView.setText(R.string.about_the_meeting);
         if (reunion.getInfo().length() < 2) {
-            mAboutDescriptionTextView.setText(descriptionTV);
+            mAboutDescriptionTextView.setText(R.string.no_more_info);
         }else{
             mAboutDescriptionTextView.setText(reunion.getInfo());
         }
-        mAvatarImageView.setBackgroundColor(reunion.getAvatarColor());
     }
 
 }

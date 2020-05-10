@@ -13,8 +13,6 @@ public class Room implements Parcelable {
 
     /**
      * Constructor
-     * @param id
-     * @param room
      */
 
     public Room(long id, String room) {

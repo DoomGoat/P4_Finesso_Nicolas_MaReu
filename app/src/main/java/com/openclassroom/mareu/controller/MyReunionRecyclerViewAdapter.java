@@ -48,13 +48,13 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         holder.mReunionInfo.setText(reunionInfo);
         //Setup avatar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            holder.mReunionAvatar.getDrawable().setColorFilter(new BlendModeColorFilter(reunion.getAvatarColor(), BlendMode.SRC_IN));
+            holder.mReunionAvatar.setColorFilter(new BlendModeColorFilter(reunion.getAvatarColor(), BlendMode.SRC_IN));
         } else {
-            //noinspection deprecation
-            holder.mReunionAvatar.getDrawable().setColorFilter(reunion.getAvatarColor() , PorterDuff.Mode.SRC_IN);
+            holder.mReunionAvatar.setColorFilter(reunion.getAvatarColor() , PorterDuff.Mode.SRC_IN);
         }
         holder.mParticipantsList.setText(reunionParticipants(reunion.getParticipants()));
 
+        holder.mReunionDate.setText(DateFormat.format("dd/MM", reunion.getBeginTime().getTime()).toString());
 
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +71,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         });
     }
 
-    public static String reunionParticipants(List<Participant> participants) {
+    static String reunionParticipants(List<Participant> participants) {
         StringBuilder reunionParticipants = new StringBuilder();
         for (int i = 0; i<participants.size(); i++){
             reunionParticipants.append(participants.get(i).getEmail());
@@ -92,6 +92,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
    static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mReunionAvatar ;
+        TextView mReunionDate;
         TextView mReunionInfo;
         TextView mParticipantsList;
         ImageButton mDeleteButton;
@@ -99,6 +100,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         ViewHolder(View view) {
             super(view);
             mReunionAvatar = view.findViewById(R.id.item_list_avatar);
+            mReunionDate = view.findViewById(R.id.item_list_date);
             mReunionInfo = view.findViewById(R.id.item_list_info);
             mParticipantsList = view.findViewById(R.id.item_list_participant);
             mDeleteButton = view.findViewById(R.id.item_list_delete_button);

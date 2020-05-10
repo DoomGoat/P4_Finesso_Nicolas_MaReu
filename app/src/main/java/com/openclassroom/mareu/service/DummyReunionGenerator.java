@@ -54,7 +54,7 @@ public abstract class DummyReunionGenerator {
             new Reunion(10, "Interview",0xFFffa500, DUMMY_ROOMS.get(2), initBeginTime("15:00", "29/04/2020"), initEndTime("16:30", "29/04/2020"), getReunionParticipants(9, 11),"")
     );
 
-
+    //Pick up participants with their place n° from the list
     private static List<Participant> getReunionParticipants(int... args){
         List<Participant> participants = new ArrayList<>();
         for(int x : args) {
@@ -63,6 +63,7 @@ public abstract class DummyReunionGenerator {
         return participants;
     }
 
+    //Allow to set the begin and end times with Strings
     private static Date initBeginTime(String time, String date){
         Date beginTime = null;
         String sDate = date+" "+time;
@@ -85,20 +86,13 @@ public abstract class DummyReunionGenerator {
         return endTime;
     }
 
+    //Returns lists
     static List<Reunion> generateReunion (){
         return new ArrayList<>(DUMMY_REUNIONS);
     }
 
     static List<Room> generateRoom(){
         return new ArrayList<>(DUMMY_ROOMS);
-    }
-
-    public static String [] listRoom () {
-        String [] list = new String [DUMMY_ROOMS.size()];
-        for (int i = 0 ; i < DUMMY_ROOMS.size(); i++){
-            list[i] = DUMMY_ROOMS.get(i).getRoom();
-        }
-        return list;
     }
 
     static List<Participant> generateParticipant (){

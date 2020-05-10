@@ -18,7 +18,18 @@
     <string name="delete">Delete</string>
     <string name="dash">-</string>
     <string name="until">until</string>
+    <string name="at_x">At %s</string>
     <string name="duration_of_the_meeting">Duration of the meeting</string>
     <string name="double_dot">:</string>
+    <string name="date">27/04</string>
+    <string name="meeting_in_the_x_room">Meeting in the %s room.</string>
+    <string name="meeting_room_available">Meeting rooms available.</string>
+    <string name="meeting_room_unavailable">Room unavailable</string>
+    <string name="meeting_room_filter">Meeting rooms filter</string>
+    <string name="meeting_from_x_to_x">Meeting from %s to %s.</string>
+    <string name="unavailable_message">The %s meeting room is not available between %s and %s.\n\nPlease select another meeting room or try for another time slot.</string>
+    <string name="no_more_info">No more information.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

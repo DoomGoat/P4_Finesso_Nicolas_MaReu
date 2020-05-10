@@ -39,13 +39,6 @@ public class Reunion implements Parcelable{
 
     /**
      * Constructor
-     * @param id
-     * @param name
-     * @param avatarColor
-     * @param location
-     * @param beginTime
-     * @param endTime
-     * @param info
      */
 
     public Reunion(long id, String name, int avatarColor, Room location, Date beginTime, Date endTime, List<Participant> participants, String info) {
