@@ -38,13 +38,14 @@ public class DetailReunionActivity extends AppCompatActivity {
         mParticipantsTextView = findViewById(R.id.detail_info_participant);
         mAboutTitleTextView = findViewById(R.id.detail_about_title);
         mAboutDescriptionTextView = findViewById(R.id.detail_about_text);
-
+        // Get all meeting info through Parcelable
         Reunion currentReunion = Objects.requireNonNull(getIntent().getExtras()).getParcelable("REUNION");
         assert currentReunion != null;
         this.displayDetails(currentReunion);
-
     }
 
+
+    // Back button click
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -54,6 +55,7 @@ public class DetailReunionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void displayDetails(final Reunion reunion) {
         mAvatarImageView.setBackgroundColor(reunion.getAvatarColor());
         mSubjectTextView.setText(reunion.getName());
@@ -62,12 +64,12 @@ public class DetailReunionActivity extends AppCompatActivity {
         mTimeTextView.setText(getString(R.string.meeting_from_x_to_x,
                 DateFormat.format("HH:mm", reunion.getBeginTime()),
                 DateFormat.format("HH:mm", reunion.getEndTime())));
-        mParticipantsTextView.setText(MyReunionRecyclerViewAdapter.reunionParticipants(reunion.getParticipants()));
-
+        mParticipantsTextView.setText(MyReunionRecyclerViewAdapter.appendParticipantsInString(reunion.getParticipants()));
         mAboutTitleTextView.setText(R.string.about_the_meeting);
+        // Info message displayed if fill by user or not
         if (reunion.getInfo().length() < 2) {
             mAboutDescriptionTextView.setText(R.string.no_more_info);
-        }else{
+        } else {
             mAboutDescriptionTextView.setText(reunion.getInfo());
         }
     }

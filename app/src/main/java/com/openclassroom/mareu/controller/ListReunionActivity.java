@@ -43,13 +43,14 @@ public class ListReunionActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     FloatingActionButton mAddReunionButton;
     MyReunionRecyclerViewAdapter mRecyclerViewAdapter;
+
     ReunionApiService mApiService = DI.getReunionApiService();
-    List<Reunion> mReunions = new ArrayList<>();
+    List<Reunion> mReunionsArrayList = new ArrayList<>();
     Boolean isDateFiltered = false;
     Boolean isLocationFiltered = false;
-    Date dateFilter;
-    String [] listMeetingRooms;
-    String locationFilter = "";
+    Date dateFilterSelected;
+    String roomFilterSelected = "";
+    String [] listOfMeetingRooms;
 
 
     @Override
@@ -60,13 +61,14 @@ public class ListReunionActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mAddReunionButton = findViewById(R.id.add_reunion);
         mRecyclerView = findViewById(R.id.list_reunion);
-        listMeetingRooms = listRoom();
+        listOfMeetingRooms = listRoomsInStrings();
 
         setSupportActionBar(mToolbar);
+
         mRecyclerViewAdapter = new  MyReunionRecyclerViewAdapter(mApiService.getReunions());
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
-
+        // Add meeting button listener
         mAddReunionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,18 +85,23 @@ public class ListReunionActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Menu Filter selection
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+
+            // Room filter
             case R.id.menuItem1:
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ListReunionActivity.this);
                 mBuilder.setTitle(R.string.meeting_room_filter);
-                mBuilder.setSingleChoiceItems(listMeetingRooms, -1, new DialogInterface.OnClickListener() {
+                mBuilder.setSingleChoiceItems(listOfMeetingRooms, -1, new DialogInterface.OnClickListener() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         System.out.println(which);
-                        locationFilter = listMeetingRooms[which];
+                        roomFilterSelected = listOfMeetingRooms[which];
                         initList();
                     }
                 });
@@ -102,7 +109,6 @@ public class ListReunionActivity extends AppCompatActivity {
                 mBuilder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         isLocationFiltered = false;
                         initList();
                     }
@@ -112,6 +118,7 @@ public class ListReunionActivity extends AppCompatActivity {
                 isLocationFiltered = true;
                 return true;
 
+            // Date filter
             case R.id.menuItem2:
                 final Calendar cldr = Calendar.getInstance();
                 int year = cldr.get(Calendar.YEAR);
@@ -127,7 +134,7 @@ public class ListReunionActivity extends AppCompatActivity {
                                 calendar.set(Calendar.YEAR, year);
                                 calendar.set(Calendar.MONTH, month);
                                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                dateFilter = calendar.getTime();
+                                dateFilterSelected = calendar.getTime();
                                 initList();
 
                             }
@@ -137,6 +144,7 @@ public class ListReunionActivity extends AppCompatActivity {
                 isDateFiltered = true;
                 return true;
 
+            // Clear filter
             case R.id.menuItem3:
                 isDateFiltered = false;
                 isLocationFiltered = false;
@@ -150,45 +158,47 @@ public class ListReunionActivity extends AppCompatActivity {
      * Init the List of reunions
      */
     private void initList() {
-        mReunions = new ArrayList<>();
-        String sDate;
-        boolean bDate = false;
-        boolean bLocation;
 
+        mReunionsArrayList = new ArrayList<>();
+        boolean boolDate = false;
+        boolean boolLocation;
+
+        // Filter (if either room, date or both are filtered)
         if (isDateFiltered || isLocationFiltered){
             for (int i = 0; i < mApiService.getReunions().size(); i++){
-                //Comparing rooms
-                bLocation = mApiService.getReunions().get(i).getLocation().getRoom().equals(locationFilter);
-                //Comparing dates
-                sDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
-                if (dateFilter != null)
-                    bDate = sDate.equals(DateFormat.format("dd/MM/yyyy", dateFilter).toString());
 
-                //If both are filtered and match filter, add the meeting to the list
+                // Comparison of rooms
+                boolLocation = mApiService.getReunions().get(i).getLocation().getRoom().equals(roomFilterSelected);
+
+                // Comparison of dates
+                if (dateFilterSelected != null) {
+                    String stringOfActualDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
+                    boolDate = stringOfActualDate.equals(DateFormat.format("dd/MM/yyyy", dateFilterSelected).toString());
+                }
+
+                // If both are filtered and match filter, add the meeting to the list
                 if (isLocationFiltered && isDateFiltered) {
-                    if (bLocation && bDate) {
-                        mReunions.add(mApiService.getReunions().get(i));
-                    }
+                    if (boolLocation && boolDate) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
 
-                //If only the room is filtered and match filter, add the meeting to the list
+                // If only the room is filtered and match filter, add the meeting to the list
                 } else if (isLocationFiltered) {
-                    if (bLocation) {
-                        mReunions.add(mApiService.getReunions().get(i));
-                    }
-                //If only the date is filtered and match filter, add the meeting to the list
+                    if (boolLocation) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
+
+                // If only the date is filtered and match filter, add the meeting to the list
                 } else {
-                    if (bDate) {
-                        mReunions.add(mApiService.getReunions().get(i));
-                    }
+                    if (boolDate) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
                 }
             }
-        //Without filter just show all meetings
+
+        // Without filter just show all meetings
         } else {
-            mReunions = mApiService.getReunions();
+            mReunionsArrayList = mApiService.getReunions();
         }
-        mRecyclerView.setAdapter(new MyReunionRecyclerViewAdapter(mReunions));
+        // Set the RecyclerViewAdapter
+        mRecyclerView.setAdapter(new MyReunionRecyclerViewAdapter(mReunionsArrayList));
     }
 
+    // App life cycles
     @Override
     public void onResume() {
         super.onResume();
@@ -207,13 +217,14 @@ public class ListReunionActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-
+    // Delete the meeting from the list when trash icon is clicked
     @Subscribe
     public void onDeleteReunion(DeleteReunionEvent event) {
         mApiService.deleteReunion(event.reunion);
         initList();
     }
 
+    // Go to the DetailActivity when a meeting cell is clicked
     @Subscribe
     public void onClickReunion(ClickReunionEvent event) {
         Intent detailActivityIntent = new Intent(ListReunionActivity.this, DetailReunionActivity.class);
@@ -221,7 +232,8 @@ public class ListReunionActivity extends AppCompatActivity {
         startActivity(detailActivityIntent);
     }
 
-    public String [] listRoom () {
+    // List the rooms in strings for the singleChoicePicker
+    public String [] listRoomsInStrings() {
         String [] list = new String [mApiService.getRooms().size()];
         for (int i = 0 ; i < mApiService.getRooms().size(); i++){
             list[i] = mApiService.getRooms().get(i).getRoom();

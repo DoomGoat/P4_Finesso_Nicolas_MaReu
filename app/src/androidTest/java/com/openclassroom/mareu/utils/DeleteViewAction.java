@@ -10,6 +10,7 @@ import com.openclassroom.mareu.R;
 import org.hamcrest.Matcher;
 
 public class DeleteViewAction implements ViewAction {
+
     @Override
     public Matcher<View> getConstraints() {
         return null;

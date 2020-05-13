@@ -13,15 +13,11 @@ public class Participant implements Parcelable {
 
     /**
      * Constructor
-     * @param id
-     * @param email
      */
-
     public Participant(long id, String email) {
         this.id = id;
         this.email = email;
     }
-
 
     public long getId() {
         return id;
@@ -40,6 +36,9 @@ public class Participant implements Parcelable {
     }
 
 
+    /**
+     * Parcelable
+     */
     @Override
     public int describeContents() {
         return 0;

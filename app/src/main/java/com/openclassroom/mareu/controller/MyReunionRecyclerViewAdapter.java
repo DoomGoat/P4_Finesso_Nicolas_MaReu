@@ -26,11 +26,12 @@ import java.util.List;
 
 public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunionRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Reunion> mReunions;
 
+    private final List<Reunion> mReunions;
     MyReunionRecyclerViewAdapter(List<Reunion> items) {
         mReunions = items;
     }
+
 
     @NonNull
     @Override
@@ -44,18 +45,24 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Reunion reunion = mReunions.get(position);
+
+        // Setup TextViews
+        // Name - Time - Room
         String reunionInfo = reunion.getName()+" - "+ DateFormat.format("HH:mm", reunion.getBeginTime()).toString()+" - "+reunion.getLocation().getRoom();
         holder.mReunionInfo.setText(reunionInfo);
-        //Setup avatar color
+        // Avatar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             holder.mReunionAvatar.setColorFilter(new BlendModeColorFilter(reunion.getAvatarColor(), BlendMode.SRC_IN));
         } else {
             holder.mReunionAvatar.setColorFilter(reunion.getAvatarColor() , PorterDuff.Mode.SRC_IN);
         }
-        holder.mParticipantsList.setText(reunionParticipants(reunion.getParticipants()));
-
+        // Participant
+        holder.mParticipantsList.setText(appendParticipantsInString(reunion.getParticipants()));
+        // Date in the avatar
         holder.mReunionDate.setText(DateFormat.format("dd/MM", reunion.getBeginTime().getTime()).toString());
 
+
+        // Delete icon click listener
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +70,7 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
             }
         });
 
+        // Meeting click listener
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,23 +79,23 @@ public class MyReunionRecyclerViewAdapter extends RecyclerView.Adapter<MyReunion
         });
     }
 
-    static String reunionParticipants(List<Participant> participants) {
+    // Make a string of all the meeting participants to display
+    static String appendParticipantsInString (List<Participant> meetingParticipants) {
         StringBuilder reunionParticipants = new StringBuilder();
-        for (int i = 0; i<participants.size(); i++){
-            reunionParticipants.append(participants.get(i).getEmail());
-            if (i<participants.size()-1){
-                reunionParticipants.append(", ");
-            }else {
-                reunionParticipants.append(".");
-            }
+        for (int i = 0; i < meetingParticipants.size(); i++) {
+            reunionParticipants.append(meetingParticipants.get(i).getEmail());
+            if (i < meetingParticipants.size()-1) reunionParticipants.append(", ");
         }
+        reunionParticipants.append(".");
         return reunionParticipants.toString();
     }
 
+    // Function required for proper operation of the RecyclerView
     @Override
     public int getItemCount() {
         return mReunions.size();
     }
+
 
    static class ViewHolder extends RecyclerView.ViewHolder {
 

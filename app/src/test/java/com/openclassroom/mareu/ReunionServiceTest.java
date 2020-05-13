@@ -3,6 +3,7 @@ package com.openclassroom.mareu;
 import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
+import com.openclassroom.mareu.model.Room;
 import com.openclassroom.mareu.service.DummyReunionGenerator;
 import com.openclassroom.mareu.service.ReunionApiService;
 
@@ -45,6 +46,14 @@ public class ReunionServiceTest {
         List<Participant> expectedParticipants = DummyReunionGenerator.DUMMY_PARTICIPANTS;
         assertThat(participants, IsIterableContainingInAnyOrder.containsInAnyOrder(Objects.requireNonNull(expectedParticipants.toArray())));
     }
+
+    @Test
+    public void getRoomWithSuccess() {
+        List<Room> rooms = service.getRooms();
+        List<Room> expectedRooms = DummyReunionGenerator.DUMMY_ROOMS;
+        assertThat(rooms, IsIterableContainingInAnyOrder.containsInAnyOrder(Objects.requireNonNull(expectedRooms.toArray())));
+    }
+
 
     @Test
     public void deleteReunionWithSuccess() {

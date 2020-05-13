@@ -22,6 +22,7 @@ public class DialogNumberPicker extends AppCompatDialogFragment {
     private int minute;
     private int hour;
     private DialogNumberPickerListener mListener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

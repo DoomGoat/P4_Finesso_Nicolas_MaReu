@@ -14,12 +14,10 @@ public class Room implements Parcelable {
     /**
      * Constructor
      */
-
     public Room(long id, String room) {
         this.id = id;
         this.room = room;
     }
-
 
     public long getId() {
         return id;
@@ -37,7 +35,9 @@ public class Room implements Parcelable {
         this.room = room;
     }
 
-
+    /**
+     * Parcelable
+     */
     @Override
     public int describeContents() {
         return 0;

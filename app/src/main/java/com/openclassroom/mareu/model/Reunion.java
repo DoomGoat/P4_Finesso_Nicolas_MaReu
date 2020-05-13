@@ -40,7 +40,6 @@ public class Reunion implements Parcelable{
     /**
      * Constructor
      */
-
     public Reunion(long id, String name, int avatarColor, Room location, Date beginTime, Date endTime, List<Participant> participants, String info) {
         this.id = id;
         this.name = name;
@@ -116,6 +115,10 @@ public class Reunion implements Parcelable{
         this.info = info;
     }
 
+
+    /**
+     * Parcelable
+     */
     @Override
     public int describeContents() {
         return 0;

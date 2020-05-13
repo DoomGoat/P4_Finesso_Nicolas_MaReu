@@ -41,31 +41,31 @@ import java.util.TimeZone;
 
 public class AddReunionActivity extends AppCompatActivity implements DialogNumberPicker.DialogNumberPickerListener {
 
-    //UI component
-    ImageView avatar;
+    // UI component
+    ImageView avatarImage;
     TextInputLayout nameInput;
     TextView dateInput;
     TextView timeInput;
     TextView durationInput;
     TextView roomInput;
-    TextView dash;
+    TextView dashTV;
     MultiAutoCompleteTextView participantsInput;
     TextInputLayout reunionInfoInput;
     Button addButton;
     TimePickerDialog mTimePicker;
 
-
+    // Meeting variables
     private ReunionApiService mApiService;
-    int mReunionColor;
-    String[] listMeetingRooms;
-    ArrayList<String> participantsList;
+    int meetingColor;
     List<Participant> meetingParticipants = new ArrayList<>();
-    Room room;
-    Date beginTime;
-    Date endTime;
-    Date duration;
+    Room meetingRoom;
+    Date meetingBeginTime;
+    Date meetingEndTime;
+    Date meetingDuration;
+    String[] listMeetingRooms;
+    ArrayList<String> listOfParticipantsNames = new ArrayList<>();
     Calendar beginCalendar = Calendar.getInstance();
-    //Fix GMT offset
+    // Fix GMT offset
     long currentGMT = TimeZone.getDefault().getRawOffset();
     String unavailableMessage;
 
@@ -76,8 +76,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         setContentView(R.layout.activity_add_reunion);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        mApiService = DI.getReunionApiService();
-        avatar = findViewById(R.id.add_avatar);
+        avatarImage = findViewById(R.id.add_avatar);
         nameInput = findViewById(R.id.nameLyt);
         dateInput = findViewById(R.id.add_date);
         timeInput = findViewById(R.id.add_time);
@@ -86,48 +85,21 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         participantsInput = findViewById(R.id.add_participants);
         reunionInfoInput = findViewById(R.id.reunionAboutLyt);
         addButton = findViewById(R.id.add_button);
-        dash = findViewById(R.id.dash);
-        mReunionColor = ((int)(Math.random()*16777215)) | (0xFF << 24);
-        participantsList = new ArrayList<>();
-        listMeetingRooms = listRoom();
+        dashTV = findViewById(R.id.dash);
 
-        //Setup avatar color
+        mApiService = DI.getReunionApiService();
+        meetingColor = ((int)(Math.random()*16777215)) | (0xFF << 24);
+        listMeetingRooms = listRoomsInStrings();
+
+        // Setup avatar color (for old and new SDK)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            avatar.getDrawable().setColorFilter(new BlendModeColorFilter(mReunionColor, BlendMode.SRC_IN));
+            avatarImage.setColorFilter(new BlendModeColorFilter(meetingColor, BlendMode.SRC_IN));
         } else {
-            //noinspection deprecation
-            avatar.getDrawable().setColorFilter(mReunionColor , PorterDuff.Mode.SRC_IN);
+            avatarImage.setColorFilter(meetingColor, PorterDuff.Mode.SRC_IN);
         }
 
-        //Setup participants ArrayList with only names
-        for (int i = 0 ; i < mApiService.getParticipants().size(); i++){
-            String email = mApiService.getParticipants().get(i).getEmail();
-            participantsList.add(email.substring(0, email.indexOf("@")));
-        }
-        final String[] arrayParticipants = participantsList.toArray(new String[0]);
 
-        //Participant autocomplete field
-        ArrayAdapter<String> adapter = new ArrayAdapter<>
-                (this, android.R.layout.select_dialog_item, arrayParticipants);
-        participantsInput.setThreshold(1); //will start working from first character
-        participantsInput.setAdapter(adapter);
-        participantsInput.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        //Get the Participant Object onClick
-        participantsInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String itemString = participantsInput.getAdapter().getItem(position).toString();
-                for (int i = 0; i < arrayParticipants.length ; i++){
-                    if (participantsList.get(i).equals(itemString)){
-                        meetingParticipants.add(mApiService.getParticipants().get(i));
-                        break;
-                    }
-                }
-                enableButtonIfReady();
-            }
-        });
-
-        //Date select input
+        // Date select input
         dateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +118,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                                 beginCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                                 String dateSet = DateFormat.format("dd/MM/yyyy", beginCalendar.getTime()).toString();
                                 dateInput.setText(dateSet);
-                                enableButtonIfReady();
+                                enableCreateButtonIfReady();
                             }
                         }, year, month, day);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
@@ -156,7 +128,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         });
 
 
-        //Meeting room single choice input
+        // Meeting Room single choice input
         roomInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,7 +137,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 mBuilder.setSingleChoiceItems(listMeetingRooms, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        room = mApiService.getRooms().get(which);
+                        meetingRoom = mApiService.getRooms().get(which);
                         roomInput.setText(getString(R.string.meeting_in_the_x_room, listMeetingRooms[which]));
 
                     }
@@ -179,12 +151,12 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();
-                enableButtonIfReady();
+                enableCreateButtonIfReady();
             }
         });
 
 
-        //Time select input
+        // Time select input
         timeInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,14 +172,14 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
                                 beginCalendar.set(Calendar.MINUTE, sMinute);
                                 beginCalendar.set(Calendar.SECOND, 0);
                                 timeInput.setText(getString(R.string.at_x, DateFormat.format("HH:mm", beginCalendar.getTime()).toString()));
-                                enableButtonIfReady();
+                                enableCreateButtonIfReady();
                                 //Enable duration picker
                                 durationInput.setAlpha(1);
                                 durationInput.setEnabled(true);
                                 //Update end time if already set
                                 if (durationInput.getText().length()>0){
                                     updateTimes();
-                                    durationInput.setText(DateFormat.format("HH:mm", endTime));
+                                    durationInput.setText(DateFormat.format("HH:mm", meetingEndTime));
                                 }
                             }
                         }, hour, minutes, true);
@@ -216,7 +188,8 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
             }
         });
 
-        //Duration select input
+
+        // Duration select input
         durationInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,45 +203,76 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void afterTextChanged(Editable s) { enableButtonIfReady(); }
+            public void afterTextChanged(Editable s) { enableCreateButtonIfReady(); }
         });
 
 
+        // Setup participants ArrayList with only names
+        for (int i = 0 ; i < mApiService.getParticipants().size(); i++){
+            String email = mApiService.getParticipants().get(i).getEmail();
+            listOfParticipantsNames.add(email.substring(0, email.indexOf("@")));
+        }
+        final String[] arrayParticipantsNames = listOfParticipantsNames.toArray(new String[0]);
 
-        //Create the new reunion AND check if other meeting overlap
+        // Participant multi autocomplete field init
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<> (this, android.R.layout.select_dialog_item, arrayParticipantsNames);
+        participantsInput.setThreshold(1); //will start working from first character
+        participantsInput.setAdapter(adapter);
+        participantsInput.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+        // Participant select input
+        participantsInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String itemNameDisplayed = participantsInput.getAdapter().getItem(position).toString();
+                for (int i = 0; i < arrayParticipantsNames.length ; i++){
+                    if (listOfParticipantsNames.get(i).equals(itemNameDisplayed)){
+                        meetingParticipants.add(mApiService.getParticipants().get(i));
+                        break;
+                    }
+                }
+                enableCreateButtonIfReady();
+            }
+        });
+
+
+        // Create the new meeting AND check if other meeting overlap
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Reunion reunion = new Reunion(
                         System.currentTimeMillis(),
-                        Objects.requireNonNull(nameInput.getEditText()).getText().toString(),
-                        mReunionColor,
-                        room,
-                        beginTime,
-                        endTime,
+                        nameInput.getEditText().getText().toString(),
+                        meetingColor,
+                        meetingRoom,
+                        meetingBeginTime,
+                        meetingEndTime,
                         meetingParticipants,
-                        Objects.requireNonNull(reunionInfoInput.getEditText()).getText().toString()
-                );
+                        Objects.requireNonNull(reunionInfoInput.getEditText()).getText().toString() );
+
+                // Create if no other meeting overlap the new one
                 if (checkMeetingAvailability()) {
                     mApiService.createReunion(reunion);
                     finish();
-                }else {
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddReunionActivity.this);
-                            mBuilder.setCancelable(true);
-                            mBuilder.setTitle(R.string.meeting_room_unavailable);
-                            mBuilder.setMessage(unavailableMessage);
-                            mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            });
-                            mBuilder.show();
+                // Else return dialog with the info of the overlap meeting
+                } else {
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddReunionActivity.this);
+                    mBuilder.setCancelable(true);
+                    mBuilder.setTitle(R.string.meeting_room_unavailable);
+                    mBuilder.setMessage(unavailableMessage);
+                    mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { }
+                    });
+                    mBuilder.show();
                 }
             }
         });
     }
 
+    // Back button click
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -278,36 +282,40 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         return super.onOptionsItemSelected(item);
     }
 
+    // Open the duration select dialog
     public void openNumberPicker(){
         DialogNumberPicker dialogNumberPicker = new DialogNumberPicker();
         dialogNumberPicker.show(getSupportFragmentManager(), "NumberPicker");
     }
-    
+
+    // Function to check if meetings overlap
     public boolean checkMeetingAvailability() {
         boolean available = true;
-        String comparedMeetingTimeBegin = "";
-        String comparedMeetingTimeEnd = "";
+
         for (int i = 0; i < mApiService.getReunions().size(); i++){
 
-            //Compare times with an interval
-            long time1 = beginTime.getTime();
-            long time2 = endTime.getTime();
-            long time3 = mApiService.getReunions().get(i).getBeginTime().getTime();
-            long time4 = mApiService.getReunions().get(i).getEndTime().getTime();
+            long newBeginTime = meetingBeginTime.getTime();
+            long newEndTime = meetingEndTime.getTime();
+            long existingBeginTime = mApiService.getReunions().get(i).getBeginTime().getTime();
+            long existingEndTime = mApiService.getReunions().get(i).getEndTime().getTime();
 
-            if ((time1 <= time3 && time2 >= time3) || (time1 <= time4 && time2 >= time4)||(time1 >= time3 && time2 <= time4)){
-                if (room.getRoom().equals(mApiService.getReunions().get(i).getLocation().getRoom())){
-                    comparedMeetingTimeBegin = DateFormat.format("HH:mm", time3).toString();
-                    comparedMeetingTimeEnd = DateFormat.format("HH:mm", time4).toString();
+            if ((newBeginTime <= existingBeginTime && newEndTime >= existingBeginTime) || // If new overlap the begin of existing meeting
+                    (newBeginTime <= existingEndTime && newEndTime >= existingEndTime) || // If new overlap between existing meeting
+                    (newBeginTime >= existingBeginTime && newEndTime <= existingEndTime)) { // If new overlap the end of existing meeting
+                // If it happen in the same room return the error message
+                if (meetingRoom.getRoom().equals(mApiService.getReunions().get(i).getLocation().getRoom())){
+                    String comparedTimeBegin = DateFormat.format("HH:mm", existingBeginTime).toString();
+                    String comparedTimeEnd = DateFormat.format("HH:mm", existingEndTime).toString();
+                    unavailableMessage = getString(R.string.unavailable_message, meetingRoom.getRoom(), comparedTimeBegin, comparedTimeEnd);
                     available = false;
                 }
             }
         }
-        unavailableMessage = getString(R.string.unavailable_message, room.getRoom(), comparedMeetingTimeBegin, comparedMeetingTimeEnd );
         return available;
     }
 
-    public void enableButtonIfReady () {
+    // Enable the Create button if all the fields are fill (info is optional)
+    public void enableCreateButtonIfReady() {
         boolean isReady = (Objects.requireNonNull(nameInput.getEditText()).getText().length() > 0
                 && timeInput.getText().length() > 0
                 && dateInput.getText().length() > 0
@@ -321,25 +329,28 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         }
     }
 
+    // Get the meeting duration set with the DialogNumberPicker
     @Override
     public void durationListener(int hour, int minute) {
         Calendar durationCal = Calendar.getInstance(Locale.getDefault());
         durationCal.setTime(new Date(0));
         durationCal.set(Calendar.HOUR_OF_DAY, hour);
         durationCal.set(Calendar.MINUTE, minute);
-        duration = durationCal.getTime();
+        meetingDuration = durationCal.getTime();
         updateTimes();
 
-        durationInput.setText(DateFormat.format("HH:mm", endTime));
-        dash.setText(R.string.until);
+        durationInput.setText(DateFormat.format("HH:mm", meetingEndTime));
+        dashTV.setText(R.string.until);
     }
 
+    // Update meeting times
     public  void updateTimes () {
-        beginTime = beginCalendar.getTime();
-        endTime = new Date(beginTime.getTime()+duration.getTime()+currentGMT);
+        meetingBeginTime = beginCalendar.getTime();
+        meetingEndTime = new Date(meetingBeginTime.getTime()+ meetingDuration.getTime()+currentGMT);
     }
 
-    public String [] listRoom () {
+    // List the rooms in strings for the singleChoicePicker
+    public String [] listRoomsInStrings() {
         String [] list = new String [mApiService.getRooms().size()];
         for (int i = 0 ; i < mApiService.getRooms().size(); i++){
             list[i] = mApiService.getRooms().get(i).getRoom();

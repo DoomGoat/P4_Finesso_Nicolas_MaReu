@@ -8,6 +8,7 @@ import androidx.test.espresso.ViewAction;
 import org.hamcrest.Matcher;
 
 public class ClickReunionViewAction implements ViewAction {
+
     @Override
     public Matcher<View> getConstraints() {
         return null;

@@ -11,7 +11,6 @@ public class ClickReunionEvent {
 
     /**
      * Constructor.
-     * @param reunion
      */
     public ClickReunionEvent(Reunion reunion) {
         this.reunion = reunion;

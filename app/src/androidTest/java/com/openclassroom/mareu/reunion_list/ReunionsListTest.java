@@ -51,6 +51,7 @@ public class ReunionsListTest {
     // This is fixed
     private static int ITEMS_COUNT = 10;
     private int positionTest = 1;
+    private String locationName = "Mario"; // Can be "Mario", "Luigi", "Peach", "Toad", "Bowser"
     private ReunionApiService service = DI.getNewInstanceApiService();
 
     @Rule
@@ -91,7 +92,6 @@ public class ReunionsListTest {
      */
     @Test
     public void ReunionList_onLocationFilterClick_shouldFilterList() {
-        String locationName = "Mario"; // Can be "Mario", "Luigi", "Peach", "Toad", "Bowser"
         // When perform a click on the menu -> then the location filter ->
         // then on the location we wanna test -> then OK button
         onView(withId(R.id.menu)).perform(click());
@@ -129,11 +129,22 @@ public class ReunionsListTest {
     }
 
     /**
-     * When we click "date" filter, only show reunions with filter
+     * When we click "clear" filter, remove all filters
      */
-
     @Test
     public void ReunionList_onClearFilterClick_shouldFilterList() {
+        // When perform a click on the menu -> then the location filter ->
+        // then on the location we wanna test -> then OK button
+        onView(withId(R.id.menu)).perform(click());
+        onView(withText("Filter by location")).perform(click());
+        onView(withText(locationName)).perform(click());
+        onView(withText("OK")).perform(click());
+        // When perform a click on the menu -> then the date filter ->
+        // then set the date we wanna test -> then OK button
+        onView(withId(R.id.menu)).perform(click());
+        onView(withText("Filter by date")).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2020, 4, 27));
+        onView(withText("OK")).perform(click());
         // When perform a click on the menu -> then clear filter
         onView(withId(R.id.menu)).perform(click());
         onView(withText("Clear filter")).perform(click());
