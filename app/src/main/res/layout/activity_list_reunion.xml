@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".controller.ListReunionActivity">
+    tools:context=".ui.ListReunionActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -52,7 +52,7 @@
             android:scrollbars="none"
             app:layoutManager="LinearLayoutManager"
 
-            tools:context=".controller.ReunionFragment"
+            tools:context=".ui.ReunionFragment"
             tools:listitem="@layout/fragment_reunion">
 
         </androidx.recyclerview.widget.RecyclerView>

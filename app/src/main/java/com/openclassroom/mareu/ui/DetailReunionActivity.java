@@ -1,4 +1,4 @@
-package com.openclassroom.mareu.controller;
+package com.openclassroom.mareu.ui;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;

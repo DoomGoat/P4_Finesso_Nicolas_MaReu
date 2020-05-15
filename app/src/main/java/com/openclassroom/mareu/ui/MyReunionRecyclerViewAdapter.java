@@ -1,4 +1,4 @@
-package com.openclassroom.mareu.controller;
+package com.openclassroom.mareu.ui;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

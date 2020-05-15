@@ -1,4 +1,4 @@
-package com.openclassroom.mareu.controller;
+package com.openclassroom.mareu.ui;
 
 import android.app.Dialog;
 import android.content.Context;

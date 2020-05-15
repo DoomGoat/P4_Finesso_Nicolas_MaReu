@@ -1,4 +1,4 @@
-package com.openclassroom.mareu.controller;
+package com.openclassroom.mareu.ui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -241,6 +241,7 @@ public class AddReunionActivity extends AppCompatActivity implements DialogNumbe
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateTimes();
                 Reunion reunion = new Reunion(
                         System.currentTimeMillis(),
                         nameInput.getEditText().getText().toString(),

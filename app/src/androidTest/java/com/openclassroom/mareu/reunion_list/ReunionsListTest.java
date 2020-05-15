@@ -14,7 +14,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.rule.ActivityTestRule;
 
-import com.openclassroom.mareu.controller.ListReunionActivity;
+import com.openclassroom.mareu.ui.ListReunionActivity;
 import com.openclassroom.mareu.di.DI;
 import com.openclassroom.mareu.service.ReunionApiService;
 import com.openclassroom.mareu.utils.ClickReunionViewAction;

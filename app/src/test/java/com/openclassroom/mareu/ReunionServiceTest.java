@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +68,15 @@ public class ReunionServiceTest {
         assertTrue(service.getReunions().contains(reunionToCreate));
     }
 
+    @Test
+    public void filterReunionWithSuccess() {
+        Reunion expectedReunion = service.getReunions().get(1);
+        List <Reunion> unexpectedReunions = service.getReunions();
+        unexpectedReunions.remove(1);
+        List<Reunion> filteredReunions = service.reunionListFilter(true, true, "Mario", "26/04/2020");
+        assertTrue(filteredReunions.contains(expectedReunion));
+        assertFalse(filteredReunions.containsAll(unexpectedReunions));
+    }
 
 
 }

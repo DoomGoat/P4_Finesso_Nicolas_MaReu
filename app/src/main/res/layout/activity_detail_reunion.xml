@@ -9,7 +9,7 @@
     android:background="#D1D1D1"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".controller.DetailReunionActivity">
+    tools:context=".ui.DetailReunionActivity">
 
 
     <ScrollView

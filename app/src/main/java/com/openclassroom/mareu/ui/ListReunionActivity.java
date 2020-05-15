@@ -1,4 +1,4 @@
-package com.openclassroom.mareu.controller;
+package com.openclassroom.mareu.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,7 +31,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +47,7 @@ public class ListReunionActivity extends AppCompatActivity {
     List<Reunion> mReunionsArrayList = new ArrayList<>();
     Boolean isDateFiltered = false;
     Boolean isLocationFiltered = false;
-    Date dateFilterSelected;
+    String dateFilterSelected = "";
     String roomFilterSelected = "";
     String [] listOfMeetingRooms;
 
@@ -134,7 +133,7 @@ public class ListReunionActivity extends AppCompatActivity {
                                 calendar.set(Calendar.YEAR, year);
                                 calendar.set(Calendar.MONTH, month);
                                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                dateFilterSelected = calendar.getTime();
+                                dateFilterSelected = DateFormat.format("dd/MM/yyyy", calendar.getTime()).toString();
                                 initList();
 
                             }
@@ -158,42 +157,8 @@ public class ListReunionActivity extends AppCompatActivity {
      * Init the List of reunions
      */
     private void initList() {
-
-        mReunionsArrayList = new ArrayList<>();
-        boolean boolDate = false;
-        boolean boolLocation;
-
-        // Filter (if either room, date or both are filtered)
-        if (isDateFiltered || isLocationFiltered){
-            for (int i = 0; i < mApiService.getReunions().size(); i++){
-
-                // Comparison of rooms
-                boolLocation = mApiService.getReunions().get(i).getLocation().getRoom().equals(roomFilterSelected);
-
-                // Comparison of dates
-                if (dateFilterSelected != null) {
-                    String stringOfActualDate = DateFormat.format("dd/MM/yyyy", mApiService.getReunions().get(i).getBeginTime()).toString();
-                    boolDate = stringOfActualDate.equals(DateFormat.format("dd/MM/yyyy", dateFilterSelected).toString());
-                }
-
-                // If both are filtered and match filter, add the meeting to the list
-                if (isLocationFiltered && isDateFiltered) {
-                    if (boolLocation && boolDate) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
-
-                // If only the room is filtered and match filter, add the meeting to the list
-                } else if (isLocationFiltered) {
-                    if (boolLocation) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
-
-                // If only the date is filtered and match filter, add the meeting to the list
-                } else {
-                    if (boolDate) { mReunionsArrayList.add(mApiService.getReunions().get(i)); }
-                }
-            }
-
-        // Without filter just show all meetings
-        } else {
-            mReunionsArrayList = mApiService.getReunions();
-        }
+        // Filter the list if one is set
+        mReunionsArrayList = mApiService.reunionListFilter(isDateFiltered, isLocationFiltered, roomFilterSelected, dateFilterSelected);
         // Set the RecyclerViewAdapter
         mRecyclerView.setAdapter(new MyReunionRecyclerViewAdapter(mReunionsArrayList));
     }

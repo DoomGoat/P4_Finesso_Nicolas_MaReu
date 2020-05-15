@@ -4,6 +4,7 @@ import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 import com.openclassroom.mareu.model.Room;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ReunionApiService {
@@ -35,5 +36,11 @@ public interface ReunionApiService {
      * @return {@link List}
      */
     List<Participant> getParticipants();
+
+    /**
+     * Filter the list of Reunions
+     * @return {@link List}
+     */
+    List<Reunion> reunionListFilter (boolean isDateFiltered, boolean isLocationFiltered, String roomFilterSelected, String dateFilterSelected);
 
 }
