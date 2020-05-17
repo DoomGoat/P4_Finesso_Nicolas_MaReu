@@ -65,8 +65,6 @@ public class DummyReunionApiService implements ReunionApiService {
                         cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
                         cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
 
-                //boolean boolDate = stringOfActualDate.equals(dateFilterSelected);
-
                 // If both are filtered and match filter, add the meeting to the list
                 if (isLocationFiltered && isDateFiltered) {
                     if (boolLocation && boolDate) { reunionsArrayList.add(getReunions().get(i)); }
