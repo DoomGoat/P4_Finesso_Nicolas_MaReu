@@ -41,6 +41,6 @@ public interface ReunionApiService {
      * Filter the list of Reunions
      * @return {@link List}
      */
-    List<Reunion> reunionListFilter (boolean isDateFiltered, boolean isLocationFiltered, String roomFilterSelected, String dateFilterSelected);
+    List<Reunion> reunionListFilter (boolean isDateFiltered, boolean isLocationFiltered, String roomFilterSelected, Date dateFilterSelected);
 
 }

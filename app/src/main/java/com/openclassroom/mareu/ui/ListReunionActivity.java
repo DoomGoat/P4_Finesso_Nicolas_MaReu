@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class ListReunionActivity extends AppCompatActivity {
     List<Reunion> mReunionsArrayList = new ArrayList<>();
     Boolean isDateFiltered = false;
     Boolean isLocationFiltered = false;
-    String dateFilterSelected = "";
+    Date dateFilterSelected;
     String roomFilterSelected = "";
     String [] listOfMeetingRooms;
 
@@ -133,7 +134,7 @@ public class ListReunionActivity extends AppCompatActivity {
                                 calendar.set(Calendar.YEAR, year);
                                 calendar.set(Calendar.MONTH, month);
                                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                dateFilterSelected = DateFormat.format("dd/MM/yyyy", calendar.getTime()).toString();
+                                dateFilterSelected = calendar.getTime();
                                 initList();
 
                             }

@@ -70,14 +70,12 @@ public class ReunionServiceTest {
 
     @Test
     public void filterReunionWithSuccess() {
-        Reunion expectedReunion = service.getReunions().get(1);
-        List <Reunion> unexpectedReunions = service.getReunions();
-        unexpectedReunions.remove(1);
-        List<Reunion> filteredReunions = service.reunionListFilter(true, true, "Mario", "26/04/2020");
+        int testIndex = 1;
+        Reunion expectedReunion = service.getReunions().get(testIndex);
+        List<Reunion> filteredReunions = service.reunionListFilter(true, true, expectedReunion.getLocation().getRoom(), expectedReunion.getBeginTime());
         assertTrue(filteredReunions.contains(expectedReunion));
-        assertFalse(filteredReunions.containsAll(unexpectedReunions));
+        assertFalse(filteredReunions.size() > 1);
     }
-
 
 }
 

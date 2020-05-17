@@ -1,13 +1,10 @@
 package com.openclassroom.mareu.service;
 
-
-import android.text.format.DateFormat;
-
 import com.openclassroom.mareu.model.Participant;
 import com.openclassroom.mareu.model.Reunion;
 import com.openclassroom.mareu.model.Room;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +43,7 @@ public class DummyReunionApiService implements ReunionApiService {
     }
 
     @Override
-    public List<Reunion> reunionListFilter (boolean isDateFiltered, boolean isLocationFiltered, String roomFilterSelected, String dateFilterSelected) {
+    public List<Reunion> reunionListFilter (boolean isDateFiltered, boolean isLocationFiltered, String roomFilterSelected, Date dateFilterSelected) {
 
         List<Reunion> reunionsArrayList = new ArrayList<>();
 
@@ -55,12 +52,20 @@ public class DummyReunionApiService implements ReunionApiService {
             for (int i = 0; i < getReunions().size(); i++) {
 
                 // Comparison of rooms
-                boolean boolLocation = getReunions().get(i).getLocation().getRoom().equals(roomFilterSelected);
+                String sReunionLocation = getReunions().get(i).getLocation().getRoom();
+                boolean boolLocation = sReunionLocation.equals(roomFilterSelected);
 
-                // Comparison of dates
-                Date theReunionDate = getReunions().get(i).getBeginTime(); //FOR DEBUG
-                String stringOfActualDate = DateFormat.format("dd/MM/yyyy", theReunionDate).toString();
-                boolean boolDate = stringOfActualDate.equals(dateFilterSelected);
+                // Comparison of dates (with calendars)
+                Calendar cal1 = Calendar.getInstance();
+                Calendar cal2 = Calendar.getInstance();
+                cal1.setTime(getReunions().get(i).getBeginTime());
+                cal2.setTime(dateFilterSelected);
+
+                boolean boolDate = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                        cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                        cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+
+                //boolean boolDate = stringOfActualDate.equals(dateFilterSelected);
 
                 // If both are filtered and match filter, add the meeting to the list
                 if (isLocationFiltered && isDateFiltered) {
