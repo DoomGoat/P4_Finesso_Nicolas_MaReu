@@ -73,8 +73,14 @@ public class ReunionServiceTest {
         int testIndex = 1;
         Reunion expectedReunion = service.getReunions().get(testIndex);
         List<Reunion> filteredReunions = service.reunionListFilter(true, true, expectedReunion.getLocation().getRoom(), expectedReunion.getBeginTime());
+        int nReuTheSameDayInTheSameRoom = 0;
+        for (int i=0; i < service.getReunions().size(); i++) {
+            if (service.getReunions().get(i).getLocation() != expectedReunion.getLocation())
+                continue;
+            nReuTheSameDayInTheSameRoom++;
+        }
         assertTrue(filteredReunions.contains(expectedReunion));
-        assertFalse(filteredReunions.size() > 1);
+        assertFalse(filteredReunions.size() > nReuTheSameDayInTheSameRoom);
     }
 
 }
